@@ -28,7 +28,7 @@ const UserProfilePage = ({
   //Destructure from state userDetails & user
   const { loading, error, userProfileDetails } = userDetails;
   const { userInfo, success } = user;
-
+  console.log(userInfo);
   const { loading: loadingMyOrders, error: errorMyOrders, myOrders } = orders;
   console.log("MY ORDERS:", myOrders);
 

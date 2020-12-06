@@ -10,6 +10,8 @@ import {
   USER_UPDATE_PROFILE_SUCCESS,
   USER_UPDATE_PROFILE_FAIL,
   USER_DETAILS_RESET,
+  USER_LIST_FOR_ADMIN_SUCCESS,
+  USER_LIST_FOR_ADMIN_FAIL,
 } from "../types/userTypes";
 
 const initialState = {
@@ -17,6 +19,7 @@ const initialState = {
   loading: false,
   error: null,
   successMessage: "",
+  allUsers: [],
 };
 
 //User Reducer
@@ -51,6 +54,12 @@ export const userReducers = (state = initialState, action) => {
     //user logout cases
     case USER_LOGOUT:
       return { loading: false, userInfo: null };
+
+    //Users list for admin cases
+    case USER_LIST_FOR_ADMIN_SUCCESS:
+      return { loading: false, allUsers: action.payload };
+    case USER_LIST_FOR_ADMIN_FAIL:
+      return { loading: false, error: action.payload };
 
     default:
       return state;

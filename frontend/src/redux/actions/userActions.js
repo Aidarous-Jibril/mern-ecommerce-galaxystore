@@ -11,6 +11,8 @@ import {
   USER_UPDATE_PROFILE_SUCCESS,
   USER_UPDATE_PROFILE_FAIL,
   USER_DETAILS_RESET,
+  USER_LIST_FOR_ADMIN_SUCCESS,
+  USER_LIST_FOR_ADMIN_FAIL,
 } from "../types/userTypes";
 import { ORDER_MY_LIST_RESET } from "../types/orderTypes";
 
@@ -110,7 +112,9 @@ export const getUserProfileDetails = (id) => async (dispatch, getState) => {
       error.response && error.response.data.message
         ? error.response.data.message
         : error.message;
-
+    if (message === "Not authorized, No token found") {
+      dispatch(userLogoutResquest());
+    }
     dispatch({
       type: USER_DETAILS_FAIL,
       payload: message,
@@ -153,7 +157,9 @@ export const updateUserProfileDetails = (userCreds) => async (
       error.response && error.response.data.message
         ? error.response.data.message
         : error.message;
-
+    if (message === "Not authorized, No token found") {
+      dispatch(userLogoutResquest());
+    }
     dispatch({
       type: USER_UPDATE_PROFILE_FAIL,
       payload: message,
@@ -167,6 +173,42 @@ export const userLogoutResquest = () => (dispatch) => {
   dispatch({ type: USER_LOGOUT });
   dispatch({ type: USER_DETAILS_RESET });
   dispatch({ type: ORDER_MY_LIST_RESET });
+};
+
+//Admin gets all users
+export const getUserListForAdminAction = () => async (dispatch, getState) => {
+  try {
+    setLoading();
+
+    const {
+      userLogin: { userInfo },
+    } = getState();
+
+    const config = {
+      headers: {
+        Authorization: `Bearer ${userInfo.token}`,
+      },
+    };
+
+    const { data } = await axios.get(`/api/users`, config);
+
+    dispatch({
+      type: USER_LIST_FOR_ADMIN_SUCCESS,
+      payload: data,
+    });
+  } catch (error) {
+    const message =
+      error.response && error.response.data.message
+        ? error.response.data.message
+        : error.message;
+    if (message === "Not authorized, No token found") {
+      dispatch(userLogoutResquest());
+    }
+    dispatch({
+      type: USER_LIST_FOR_ADMIN_FAIL,
+      payload: message,
+    });
+  }
 };
 
 // Set loading to true
