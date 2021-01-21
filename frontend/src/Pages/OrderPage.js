@@ -1,42 +1,50 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import { Col, ListGroup, Row, Card } from "react-bootstrap";
-import { connect } from "react-redux";
-import {
-  getSingleOrderDetailsAction,
-  orderPaymentAction,
-  orderResetEfterPaymentAction,
-} from "../redux/actions/orderActions";
+import { Col, ListGroup, Row, Card, Button } from "react-bootstrap";
+import { connect, useDispatch } from "react-redux";
 import MessageContainer from "../components/MessageContainer";
 import Loader from "../components/Loader";
 import { PayPalButton } from "react-paypal-button-v2";
 import OrderItemsPage from "./OrderItemsPage";
-
-const OrderPage = ({
-  match,
+import {
   getSingleOrderDetailsAction,
   orderPaymentAction,
-  orderResetEfterPaymentAction,
-  orders,
+  orderDeliverAction
+} from "../redux/actions/orderActions";
+import { ORDER_PAY_RESET, ORDER_SET_TO_DELIVERY_BY_ADMIN_RESET } from "../redux/types/orderTypes";
+import StripePayment from "./StripePayment";
+
+const OrderPage = ({
+  match, history,
+  user,
+  orderDetails,
   orderPayment,
+  orderDeliver
 }) => {
+
   const orderId = match.params.id;
 
   //sdkReady piece state
   const [sdkReady, setSdkReady] = useState(false);
 
-  //Dest these from orderCreate state
-  const { order, loading, error } = orders;
-  console.log("Order_Items are", order, loading);
+  //Dest these from orderDetails state
+  // rename orderItems to order
+  const { orderItems: order, loading, error } = orderDetails;
+  // console.log("Order_Items are", orderItems, loading);
+  const { userInfo} = user;
   const { loading: loadingPay, success: successPay } = orderPayment;
-  console.log(loadingPay, successPay);
+  const { loading: loadingDeliver, success: successDeliver } = orderDeliver;
+
+ const dispatch = useDispatch();
 
   useEffect(() => {
-    // if (!userInfo) {
-    //   history.push("/login");
-    // }
+    if (!userInfo) {
+      history.push("/login");
+    }
 
+    //Create paypal script dynamically
     const addPayPalScript = async () => {
+      //fetch secret peypal client id från backend 
       const { data: clientId } = await axios.get("/api/config/paypal");
       const script = document.createElement("script");
       script.type = "text/javascript";
@@ -48,9 +56,11 @@ const OrderPage = ({
       document.body.appendChild(script);
     };
 
-    if (!order || successPay || order._id !== orderId) {
-      orderResetEfterPaymentAction();
-      getSingleOrderDetailsAction(orderId);
+    if (!order || order._id !== orderId || successPay || successDeliver) {
+      dispatch({type: ORDER_PAY_RESET})
+      dispatch({type: ORDER_SET_TO_DELIVERY_BY_ADMIN_RESET})
+      dispatch(getSingleOrderDetailsAction(orderId));
+
     } else if (!order.isPaid) {
       if (!window.paypal) {
         addPayPalScript();
@@ -58,22 +68,27 @@ const OrderPage = ({
         setSdkReady(true);
       }
     }
+
     // eslint-disable-next-line
-  }, [orderId, successPay, order]);
+  }, [orderId, order, successPay, successDeliver, ]);
 
   //Success payment handler
   const successPaymentHandler = (paymentResult) => {
-    console.log(paymentResult);
-    orderPaymentAction(orderId, paymentResult);
+    console.log('PAYPAL PAYMENT:', paymentResult);
+    dispatch(orderPaymentAction(orderId, paymentResult));
   };
 
-  if (!order || order.orderItems === null || loading) {
-    return <Loader />;
+  //markAsDelivered Handler
+  const markAsDeliveredHandler = () => {
+    dispatch(orderDeliverAction(order))
   }
 
-  return (
+  return loading ? (
+    <Loader />
+    ) : error ? (
+      <MessageContainer variant='danger'>{error}</MessageContainer>
+    ) : (
     <>
-      {error && <MessageContainer variant="danger">{error}</MessageContainer>}
       <h1>Order: {order._id}</h1>
       <Row>
         {/* 8 column col */}
@@ -113,7 +128,7 @@ const OrderPage = ({
               </p>
               {order.isPaid ? (
                 <MessageContainer variant="success">
-                  Betald på {order.paidAt}
+                  Betald På {order.paidAt}
                 </MessageContainer>
               ) : (
                 <MessageContainer variant="danger">
@@ -187,25 +202,49 @@ const OrderPage = ({
                   )}
                 </ListGroup.Item>
               )}
+              {!order.isPaid && (
+                <ListGroup.Item>
+                  {loadingPay && <Loader />}
+                  {!sdkReady ? (
+                    <Loader />
+                  ) : (
+                  <>
+                   <h6>For demo use following test credit card </h6><br />
+                    <p>42424242424242424</p>
+                    <p>01/21 : CVC 123</p>
+                    <hr />
+                      <StripePayment 
+                      amount={order.totalPrice * 100}
+                      orderId={orderId}
+                      />
+                    </>
+                  )}
+                </ListGroup.Item>
+              )}
+
+              {loadingDeliver && <Loader />}
+              {userInfo && userInfo.isAdmin && order.isPaid && !order.isDelivered && (
+              <ListGroup.Item>
+                <Button onClick={markAsDeliveredHandler}>
+                  Märkera Levererad
+                </Button>
+              </ListGroup.Item>
+              )}
             </ListGroup>
           </Card>
         </Col>
       </Row>
     </>
+  
   );
 };
 
-//mapDispatchToProps
-const mapDispatchToProps = (dispatch) => ({
-  getSingleOrderDetailsAction: (id) =>
-    dispatch(getSingleOrderDetailsAction(id)),
-  orderPaymentAction: (id) => dispatch(orderPaymentAction(id)),
-  orderResetEfterPaymentAction: () => dispatch(orderResetEfterPaymentAction()),
-});
 
 //mapStateToProps
-const mapStateToProps = ({ orders, orderPayment }) => ({
-  orders: orders,
+const mapStateToProps = ({ user, orderDetails, orderPayment, orderDeliver }) => ({
+  user: user,
+  orderDetails: orderDetails,
   orderPayment: orderPayment,
+  orderDeliver: orderDeliver,
 });
-export default connect(mapStateToProps, mapDispatchToProps)(OrderPage);
+export default connect(mapStateToProps, null)(OrderPage);

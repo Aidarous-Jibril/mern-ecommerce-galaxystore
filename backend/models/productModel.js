@@ -1,10 +1,11 @@
 
 import mongoose from 'mongoose'
 
+//This reviewSchema array holds all rating by different users
 const reviewSchema = mongoose.Schema(
   {
     name: { type: String, required: true },
-    rating: { type: Number, required: true }, //This is for single rating
+    rating: { type: Number, required: true }, //This is for single rating from each user
     comment: { type: String, required: true },
     user: {
       type: mongoose.Schema.Types.ObjectId,
@@ -44,8 +45,8 @@ const productSchema = mongoose.Schema(
       type: String,
       required: true,
     },
-    reviews: [reviewSchema], //This is for reviews Schema which holds average of all ratings
-    rating: { //This is for average of all ratings
+    reviews: [reviewSchema], //This is for reviews Schema which holds each rating
+    rating: { //This is for average of all ratings, average = rating.length/
       type: Number,
       required: true,
       default: 0,

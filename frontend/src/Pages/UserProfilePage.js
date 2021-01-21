@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { connect } from "react-redux";
+import { connect, useDispatch } from "react-redux";
 import { Form, Button, Row, Col, Table } from "react-bootstrap";
 import { LinkContainer } from "react-router-bootstrap";
 import Loader from "../components/Loader.js";
@@ -9,15 +9,14 @@ import {
   updateUserProfileDetails,
 } from "../redux/actions/userActions";
 import { myOrdersListAction } from "../redux/actions/orderActions";
+import { USER_UPDATE_PROFILE_RESET } from "../redux/types/userTypes.js";
 
 const UserProfilePage = ({
   history,
   user,
   userDetails,
-  orders,
-  getUserProfileDetails,
-  updateUserProfileDetails,
-  myOrdersListAction,
+  userProfileUpdate,
+  myOrderList
 }) => {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
@@ -25,33 +24,30 @@ const UserProfilePage = ({
   const [confirmPassword, setConfirmPassword] = useState("");
   const [message, setMessage] = useState("");
 
-  //Destructure from state userDetails & user
+  const dispatch = useDispatch()
+
+  //Destructure from state 
+  const { userInfo } = user;
   const { loading, error, userProfileDetails } = userDetails;
-  const { userInfo, success } = user;
-  console.log(userInfo);
-  const { loading: loadingMyOrders, error: errorMyOrders, myOrders } = orders;
-  console.log("MY ORDERS:", myOrders);
+  const { success } = userProfileUpdate;
+  const { loading: loadingMyOrders, error: errorMyOrders, myOrders } = myOrderList;
+
 
   useEffect(() => {
     if (!userInfo) {
       history.push("/login");
     } else {
       if (!userProfileDetails || !userProfileDetails.name || success) {
-        getUserProfileDetails("profile");
-        myOrdersListAction();
+        dispatch({ type: USER_UPDATE_PROFILE_RESET })
+        dispatch(getUserProfileDetails("profile"));
+        dispatch(myOrdersListAction());
       } else {
         setName(userProfileDetails.name);
         setEmail(userProfileDetails.email);
       }
     }
     // eslint-disable-next-line
-  }, [
-    userInfo,
-    history,
-    userProfileDetails,
-    getUserProfileDetails,
-    myOrdersListAction,
-  ]);
+  }, [dispatch, history, userInfo, success, userProfileDetails, getUserProfileDetails, myOrdersListAction ]);
 
   //submit
   const submitHandler = (e) => {
@@ -60,35 +56,31 @@ const UserProfilePage = ({
       setMessage("Password do not match");
     } else {
       //Dispatch updateUserProfileDetails
-      updateUserProfileDetails({
+      dispatch(updateUserProfileDetails({
         id: userProfileDetails._id,
         name,
         email,
         password,
-      });
+      }));
     }
-
     //reset form fields
     setName("");
     setEmail("");
     setPassword("");
   };
 
-  if (!myOrders || loadingMyOrders) {
-    return <Loader />;
-  }
   return (
     <Row>
       <Col xs={12} md={3}>
         <h1>Din Profil</h1>
-        {message && (
-          <MessageContainer variant="danger">{message}</MessageContainer>
-        )}
-        {success && (
-          <MessageContainer variant="danger">Profil Updaterad</MessageContainer>
-        )}
-        {error && <MessageContainer variant="danger">{error}</MessageContainer>}
-        {loading && <Loader />}
+        { message && <MessageContainer variant="danger">{message}</MessageContainer> }
+        { success && <MessageContainer variant='success'>Profile Updated</MessageContainer>}
+
+        {loading ? (
+          <Loader />
+        ) : error ? (
+          <MessageContainer variant='danger'>{error}</MessageContainer>
+        ) : (
         <Form onSubmit={submitHandler}>
           <Form.Group controlId="formBasicName">
             <Form.Label>Name address</Form.Label>
@@ -131,15 +123,17 @@ const UserProfilePage = ({
           <Button type="submit" variant="primary">
             Update
           </Button>
-        </Form>
+        </Form>  
+        )}   
       </Col>
+
       <Col responsive="sm" md={9}>
         <h1>Dina ordrar</h1>
         {loadingMyOrders ? (
           <Loader />
         ) : errorMyOrders ? (
           <MessageContainer variant="danger">{errorMyOrders}</MessageContainer>
-        ) : myOrders.length === 0 ? (
+        ) :  myOrders.length === 0 ? (
           <MessageContainer variant="info">Du har inga ordrar</MessageContainer>
         ) : (
           <Table striped bordered hover responsive className="table-sm">
@@ -197,17 +191,13 @@ const UserProfilePage = ({
   );
 };
 
-const mapDispatchToProps = (dispatch) => ({
-  getUserProfileDetails: (profile) => dispatch(getUserProfileDetails(profile)),
-  updateUserProfileDetails: (userCreds) =>
-    dispatch(updateUserProfileDetails(userCreds)),
-  myOrdersListAction: () => dispatch(myOrdersListAction()),
-});
+
 //mapStateToProps
-const mapStateToProps = ({ user, userDetails, orders }) => ({
+const mapStateToProps = ({ user, userDetails, userProfileUpdate, myOrderList }) => ({
   user: user,
   userDetails: userDetails,
-  orders: orders,
+  userProfileUpdate: userProfileUpdate,
+  myOrderList: myOrderList,
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(UserProfilePage);
+export default connect(mapStateToProps, null)(UserProfilePage);

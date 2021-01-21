@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import { connect } from "react-redux";
+import { connect, useDispatch } from "react-redux";
 import {
   Row,
   Col,
@@ -17,23 +17,27 @@ const CartPage = ({
   history,
   match,
   location,
-  addToCart,
-  removeItemFromCart,
   cart,
 }) => {
   const productId = match.params.id;
+  //get qty search query in the url by splitting
   const qty = location.search ? Number(location.search.split("=")[1]) : 1;
   const { cartItems } = cart;
-  console.log(cartItems);
+  // console.log(cartItems);
+
+  const dispatch = useDispatch()
 
   useEffect(() => {
-    addToCart(productId, qty);
+    //fire addToCart action and add product & qty to cart as as useEffect fired in this component
+    if(productId) {
+      dispatch(addToCart(productId, qty));
+    } 
     //eslint-disable-next-line
-  }, [productId, qty]);
+  }, [dispatch, productId, qty]);
 
   //Remove cart handler
   const removeCartHandler = (id) => {
-    removeItemFromCart(id);
+    dispatch(removeItemFromCart(id));
   };
   //Check out handler
   const checkoutHandler = () => {
@@ -43,16 +47,16 @@ const CartPage = ({
   return (
     <Row>
       <Col md={8}>
-        <h1>Shopping Cart</h1>
+        <h1>Köpping Cart</h1>
         {cartItems.length === 0 ? (
           <h4>
-            Your Cart is empty{" "}
+            Din kundvagn är tomt{" "}
             <Link
               to="/"
               variant="primary"
               className="btn btn my-3 text-dark bold"
             >
-              Go Back
+              Tillbaka
             </Link>
           </h4>
         ) : (
@@ -73,7 +77,7 @@ const CartPage = ({
                       as="select"
                       value={item.qty}
                       onChange={(e) =>
-                        addToCart(item.id, Number(e.target.value))
+                        dispatch(addToCart(item.id, Number(e.target.value)))
                       }
                     >
                       {[...Array(item.countInStock).keys()].map((x) => (
@@ -130,14 +134,10 @@ const CartPage = ({
   );
 };
 
-// //mapDispatchToProps
-const mapDispatchToProps = (dispatch) => ({
-  addToCart: (productId, qty) => dispatch(addToCart(productId, qty)),
-  removeItemFromCart: (id) => dispatch(removeItemFromCart(id)),
-});
+
 //mapStateToProps
 const mapStateToProps = ({ cart }) => ({
   cart: cart,
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(CartPage);
+export default connect(mapStateToProps, null)(CartPage);

@@ -1,4 +1,6 @@
 const products = [
+  electronics = [
+
     {
       name: 'Iphone 12 Pro Max',
       image: '/images/iphone12promax.png',
@@ -98,6 +100,7 @@ const products = [
       numStock: 3,
       numReviews: 5
     }
+  ],
   ]
 
 export default products;

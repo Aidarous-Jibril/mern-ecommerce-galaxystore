@@ -1,33 +1,66 @@
 import express from "express";
 import dotenv from "dotenv";
 import colors from "colors";
+import morgan from "morgan";
+import path from "path";
 import cookieParser from "cookie-parser";
+import Stripe from 'stripe';
 import connectDB from "./config/db.js";
-import productRouter from "./routes/productRouter.js";
-import userRouter from "./routes/userRouter.js";
+import productRoutes from "./routes/productRoutes.js";
+import userRoutes from "./routes/userRoutes.js";
 import orderRoutes from "./routes/orderRoutes.js";
+import imgUploadRoutes from "./routes/imgUploadRoutes.js";
 
 dotenv.config();
 connectDB();
+
 
 const app = express();
 
 //Middlewares
 app.use(express.json());
 app.use(cookieParser());
+//Morgan middleware
+if (process.env.NODE_ENV === 'development') {
+  app.use(morgan('dev'))
+}
 
 app.get("/", (req, res) => {
   res.send("Home page");
 });
 
-app.use("/api/products", productRouter);
-app.use("/api/users", userRouter);
+app.use("/api/products", productRoutes);
+app.use("/api/users", userRoutes);
 app.use("/api/orders", orderRoutes);
+app.use("/api/upload", imgUploadRoutes);
 
-//Paypal
+//Paypal API end point
 app.get("/api/config/paypal", (req, res) =>
   res.send(process.env.PAYPAL_CLIENT_ID)
 );
+
+//since we use ES6 module, make __dirname accessible in ES6 module
+const __dirname = path.resolve()
+app.use('/uploads', express.static(path.join(__dirname, '/uploads')))
+
+const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
+//Stripe payment route
+app.post('/stripe', (req, res) => {
+  console.log(req.body)
+  const body = {
+    source: req.body.token.id,
+    amount: req.body.amount,
+    currency: 'usd'
+  };
+
+  stripe.charges.create(body, (stripeErr, stripeRes) => {
+    if (stripeErr) {
+      res.status(500).send({ error: stripeErr });
+    } else {
+      res.status(200).send({ success: stripeRes });
+    }
+  });
+});
 
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {

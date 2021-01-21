@@ -3,13 +3,16 @@ import {
   SET_LOADING,
   ORDER_CREATE_SUCCESS,
   ORDER_CREATE_FAIL,
-  SINGLE_ORDER_FETCH_SUCCESS,
-  SINGLE_ORDER_FETCH_FAIL,
+  SINGLE_ORDER_ITEMS_FETCH_SUCCESS,
+  SINGLE_ORDER_ITEMS_FETCH_FAIL,
   ORDER_PAY_FAIL,
   ORDER_PAY_SUCCESS,
-  ORDER_PAY_RESET,
   ORDER_MY_LIST_SUCCESS,
   ORDER_MY_LIST_FAIL,
+  ORDERS_LIST_GET_BY_ADMIN_SUCCESS,
+  ORDERS_LIST_GET_BY_ADMIN_FAIL,
+  ORDER_SET_TO_DELIVERY_BY_ADMIN_FAIL,
+  ORDER_SET_TO_DELIVERY_BY_ADMIN_SUCCESS,
 } from "../types/orderTypes";
 
 //Create order action
@@ -34,8 +37,6 @@ export const createOrderAction = (orderData) => async (dispatch, getState) => {
       type: ORDER_CREATE_SUCCESS,
       payload: data,
     });
-
-    //   localStorage.setItem('userInfo', JSON.stringify(data))
   } catch (error) {
     const message =
       error.response && error.response.data.message
@@ -63,7 +64,6 @@ export const getSingleOrderDetailsAction = (orderId) => async (
 
     const config = {
       headers: {
-        "Content-Type": "application/json",
         Authorization: `Bearer ${userInfo.token}`,
       },
     };
@@ -71,7 +71,7 @@ export const getSingleOrderDetailsAction = (orderId) => async (
     const { data } = await axios.get(`/api/orders/${orderId}`, config);
 
     dispatch({
-      type: SINGLE_ORDER_FETCH_SUCCESS,
+      type: SINGLE_ORDER_ITEMS_FETCH_SUCCESS,
       payload: data,
     });
   } catch (error) {
@@ -81,7 +81,7 @@ export const getSingleOrderDetailsAction = (orderId) => async (
         : error.message;
 
     dispatch({
-      type: SINGLE_ORDER_FETCH_FAIL,
+      type: SINGLE_ORDER_ITEMS_FETCH_FAIL,
       payload: message,
     });
   }
@@ -128,13 +128,45 @@ export const orderPaymentAction = (orderId, paymentResult) => async (
     });
   }
 };
+//Order deliver action
+export const orderDeliverAction = (order) => async (
+  dispatch,
+  getState
+) => {
+  try {
+    setLoading();
 
-// Set loading to true
-export const orderResetEfterPaymentAction = () => {
-  return {
-    type: ORDER_PAY_RESET,
-  };
+    const {
+      user: { userInfo },
+    } = getState();
+
+    const config = {
+      headers: {
+        Authorization: `Bearer ${userInfo.token}`,
+      },
+    };
+
+    const { data } = await axios.put(
+      `/api/orders/${order._id}/deliver`, {}, config
+    );
+
+    dispatch({
+      type: ORDER_SET_TO_DELIVERY_BY_ADMIN_SUCCESS,
+      payload: data,
+    });
+  } catch (error) {
+    const message =
+      error.response && error.response.data.message
+        ? error.response.data.message
+        : error.message;
+
+    dispatch({
+      type: ORDER_SET_TO_DELIVERY_BY_ADMIN_FAIL,
+      payload: message,
+    });
+  }
 };
+
 
 //List of my Orders
 export const myOrdersListAction = () => async (dispatch, getState) => {
@@ -161,6 +193,44 @@ export const myOrdersListAction = () => async (dispatch, getState) => {
 
     dispatch({
       type: ORDER_MY_LIST_FAIL,
+      payload: message,
+    });
+  }
+};
+
+
+//Get all orders by ADMIN
+export const getAllOrdersAction = () => async (
+  dispatch,
+  getState
+) => {
+  try {
+    setLoading();
+
+    const {
+      user: { userInfo },
+    } = getState();
+
+    const config = {
+      headers: {
+        Authorization: `Bearer ${userInfo.token}`,
+      },
+    };
+
+    const { data } = await axios.get('/api/orders', config);
+
+    dispatch({
+      type: ORDERS_LIST_GET_BY_ADMIN_SUCCESS,
+      payload: data,
+    });
+  } catch (error) {
+    const message =
+      error.response && error.response.data.message
+        ? error.response.data.message
+        : error.message;
+
+    dispatch({
+      type: ORDERS_LIST_GET_BY_ADMIN_FAIL,
       payload: message,
     });
   }

@@ -1,24 +1,26 @@
 import React, { useState, useEffect } from 'react'
-import { connect } from 'react-redux'
+import { connect, useDispatch } from 'react-redux'
 import { Link } from 'react-router-dom'
 import { Form, Button, Row, Col } from 'react-bootstrap'
 import FormContainer from './FormContainer.js'
+import GoogleLoginPage from './GoogleLoginPage.js'
 import { userLoginRequest } from '../redux/actions/userActions'
 import Loader from '../components/Loader'
 import MessageContainer from '../components/MessageContainer.js'
+import FacebookLoginPage from './FacebookLoginPage.js'
 
-const LoginPage = ({history, loginRequest , user }) => {
+const LoginPage = ({history, user }) => {
     const [email, setEmail] = useState('')
     const [password, setPassword] = useState('')
+
+    const dispatch = useDispatch();
 
     //destructure userInfo
     const { userInfo, loading, error } = user; 
 
-
-
     useEffect(() => {
         if(userInfo){
-            history.push('/')
+            history.push('/shipping')
         } 
     }, [userInfo, history])
 
@@ -26,59 +28,71 @@ const LoginPage = ({history, loginRequest , user }) => {
     const submitHandler = (e) => {
         e.preventDefault()
 
-        loginRequest(email, password);    
+        dispatch(userLoginRequest(email, password));    
 
         //reset form fields
         setEmail('');
         setPassword('');
     }
 
+
       return (
         <FormContainer>
-            <h1>Sign In</h1>
-            {error && <MessageContainer variant='danger'>{error}</MessageContainer>}
+            <h1>Signa In</h1>
+            {error && <MessageContainer variant='danger'>{error.password || error.email}</MessageContainer>}
             {loading && <Loader />}
             <Form onSubmit={submitHandler}>
                 <Form.Group controlId='email'>
-                <Form.Label>Email Address</Form.Label>
+                <Form.Label>Email Adress</Form.Label>
                 <Form.Control
                     type='email'
-                    placeholder='Enter email'
+                    placeholder='Ditt email'
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                 ></Form.Control>
                 </Form.Group>
 
                 <Form.Group controlId='password'>
-                <Form.Label>Password</Form.Label>
+                <Form.Label>Lösenord</Form.Label>
                 <Form.Control
                     type='password'
-                    placeholder='Enter password'
+                    placeholder='Ditt Lösenord'
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
                 ></Form.Control>
                 </Form.Group>
 
-                <Button type='submit' variant='primary'>
-                Sign In
-                </Button>
+                <Button type='submit' className='btn btn-block my-3' variant='primary'>
+                    Logga In
+                </Button>           
+                { }
+                <Row style={btnStyle} >  
+                    <div className="col-md-6 my-4"  ><GoogleLoginPage   /> </div>
+                    <div className='col-md-6 my-2 ' ><FacebookLoginPage /> </div>     
+   
+                </Row>
             </Form>
 
             <Row className='my-3'>
                 <Col>
-                   New Customer? {' '} <Link to='/register'>Register</Link>
+                   Ny Kund? {' '} <Link to='/register'>Registrera Dig</Link>
                 </Col>
             </Row>
         </FormContainer>
       )
     }
-    
-    const mapDispatchToProps = dispatch => ({
-        loginRequest : (email, password) => dispatch(userLoginRequest ( email, password ))
-    });
+
+    //Stle for google & fb btns
+    const btnStyle = { 
+        display: 'flex', 
+        flexDirection: 'row',
+        justifyContent: 'spaceBetween' 
+      }
+
 //mapStateToProps
 const mapStateToProps = ({ user }) => ({
     user: user
 })
-  
-  export default connect(mapStateToProps, mapDispatchToProps)(LoginPage);
+
+export default connect(mapStateToProps, null)(LoginPage);
+

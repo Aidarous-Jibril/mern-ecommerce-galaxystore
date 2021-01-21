@@ -4,13 +4,17 @@ import {
   addOrderToDB,
   getSingleOrder,
   setOrderToBePaid,
-  getMyOrders,
+  getMyOrders, 
+  getAllOrders,
+  setOrderToDelivery
 } from "../controllers/orderController.js";
-import { requireAuth } from "../middlewares/authMiddleware.js";
+import { requireAdminAccess, requireAuth } from "../middlewares/authMiddleware.js";
 
 router.post("/", requireAuth, addOrderToDB);
+router.get("/", requireAuth, requireAdminAccess, getAllOrders);
 router.get("/myorders", requireAuth, getMyOrders);
 router.get("/:id", requireAuth, getSingleOrder);
 router.put("/:id/payment", requireAuth, setOrderToBePaid);
+router.put("/:id/deliver", requireAuth, requireAdminAccess, setOrderToDelivery);
 
 export default router;

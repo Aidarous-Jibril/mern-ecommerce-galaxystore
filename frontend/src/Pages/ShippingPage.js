@@ -1,20 +1,22 @@
 import React, { useState } from "react";
-import { connect } from "react-redux";
+import { connect, useDispatch } from "react-redux";
 import { Form, Button } from "react-bootstrap";
 import FormContainer from "./FormContainer.js";
 import { saveShippingAddress } from "../redux/actions/cartActions.js";
 import CheckoutProcessSteps from "../components/CheckoutProcessSteps.js";
 
-const ShippingPage = ({ history, shippingAddress, saveShippingAddress }) => {
+const ShippingPage = ({ history, shippingAddress, user}) => {
   const [address, setAddress] = useState(shippingAddress.address);
   const [postNumber, setPostNumber] = useState(shippingAddress.postNumber);
   const [city, setCity] = useState(shippingAddress.city);
   const [country, setCountry] = useState(shippingAddress.country);
 
+  const dispatch = useDispatch();
+
   //Submit
   const submitHandler = (e) => {
     e.preventDefault();
-    saveShippingAddress({ address, postNumber, city, country });
+    dispatch(saveShippingAddress({ address, postNumber, city, country }));
     history.push("/payment");
   };
 
@@ -69,12 +71,9 @@ const ShippingPage = ({ history, shippingAddress, saveShippingAddress }) => {
   );
 };
 
-const mapDispatchToProps = (dispatch) => ({
-  saveShippingAddress: (data) => dispatch(saveShippingAddress(data)),
-});
-
 //mapStateToProps
-const mapStateToProps = ({ cart: { shippingAddress } }) => ({
+const mapStateToProps = ({ cart: { shippingAddress, user } }) => ({
   shippingAddress: shippingAddress,
+  user: user
 });
-export default connect(mapStateToProps, mapDispatchToProps)(ShippingPage);
+export default connect(mapStateToProps, null)(ShippingPage);

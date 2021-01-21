@@ -1,16 +1,18 @@
 import React, { useEffect } from 'react'
-import { connect } from 'react-redux'
+import { connect,useDispatch } from 'react-redux'
 import { Link } from 'react-router-dom'
 import { Col, ListGroup, ListGroupItem, Row, Image, Button } from 'react-bootstrap'
 import CheckoutProcessSteps from '../components/CheckoutProcessSteps'
 import MessageContainer from '../components/MessageContainer'
 import { createOrderAction } from '../redux/actions/orderActions'
 
-const PlaceOrderPage = ({ history, shippingAddress, paymentMethod, cartItems, createOrderAction, orders }) => {
+const PlaceOrderPage = ({ history, shippingAddress, paymentMethod, cartItems, orderCreate }) => {
     
+    const dispatch = useDispatch()
+
     console.log('PAYMENT', paymentMethod)
     //Dest these from orderCreate state
-    const { order, success, error } = orders
+    const { order, success, error } = orderCreate
 
     useEffect(() => {
         if (success) {
@@ -35,18 +37,18 @@ const PlaceOrderPage = ({ history, shippingAddress, paymentMethod, cartItems, cr
     //calc total price including shipping price 
     const totalPrice = ( Number(itemsPrice) + Number(shippingPrice) ).toFixed(2)
 
-        //placeOrderHandler
+    //placeOrderHandler
     const placeOrderHandler = () => {
-            createOrderAction({
-                orderItems: cartItems,
-                shippingAddress, 
-                paymentMethod,
-                shippingPrice, 
-                totalPrice, 
-                itemsPrice
-            })
-            console.log('Order placed')
-        }
+        dispatch(createOrderAction({
+            orderItems: cartItems,
+            shippingAddress, 
+            paymentMethod,
+            shippingPrice, 
+            totalPrice, 
+            itemsPrice
+        }))
+        console.log('Order placed')
+    }
 
     return (
         <>
@@ -144,7 +146,7 @@ const PlaceOrderPage = ({ history, shippingAddress, paymentMethod, cartItems, cr
                         disabled={cartItems === 0}
                         onClick={placeOrderHandler}
                         >
-                        Beställa
+                        Beställ
                         </Button>
                     </ListGroupItem>
                 </Col>
@@ -154,16 +156,11 @@ const PlaceOrderPage = ({ history, shippingAddress, paymentMethod, cartItems, cr
     )
 }
 
-//mapDispatchToProps
-const mapDispatchToProps = dispatch => ({
-    createOrderAction: (orderData) => dispatch(createOrderAction(orderData))
-});
-
 //mapStateToProps
-const mapStateToProps = ({ cart: { shippingAddress, cartItems, paymentMethod }, orders }) => ({
+const mapStateToProps = ({ cart: { shippingAddress, cartItems, paymentMethod }, orderCreate }) => ({
     shippingAddress: shippingAddress,
     paymentMethod: paymentMethod,
     cartItems: cartItems,
-    orders: orders
+    orderCreate: orderCreate
 })
-export default connect(mapStateToProps, mapDispatchToProps)(PlaceOrderPage)
+export default connect(mapStateToProps, null)(PlaceOrderPage)

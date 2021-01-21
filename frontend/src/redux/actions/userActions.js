@@ -13,6 +13,15 @@ import {
   USER_DETAILS_RESET,
   USER_LIST_FOR_ADMIN_SUCCESS,
   USER_LIST_FOR_ADMIN_FAIL,
+  USER_DELETE_FOR_ADMIN_SUCCESS,
+  USER_DELETE_FOR_ADMIN_FAIL,
+  USER_UPDATE_BY_ADMIN_SUCCESS,
+  USER_UPDATE_BY_ADMIN_FAIL,
+  USER_LOGIN_WITH_GOOGLE_SUCCESS,
+  USER_LOGIN_WITH_GOOGLE_FAIL,
+  USER_LOGIN_WITH_FACEBOOK_SUCCESS,
+  USER_LOGIN_WITH_FACEBOOK_FAIL,
+  USER_LIST_FOR_ADMIN_RESET,
 } from "../types/userTypes";
 import { ORDER_MY_LIST_RESET } from "../types/orderTypes";
 
@@ -22,28 +31,92 @@ export const userLoginRequest = (email, password) => async (dispatch) => {
 
     const config = {
       headers: {
-        "Content-Type": "application/json",
+        'Content-Type': 'application/json',
       },
-    };
-    //Backend api call
+    }
+
     const { data } = await axios.post(
-      "/api/users/login",
+      '/api/users/login',
       { email, password },
       config
-    );
+    )
 
     dispatch({
       type: USER_LOGIN_SUCCESS,
       payload: data,
+    })
+    //set user data into localStorage
+    localStorage.setItem("userInfo", JSON.stringify(data));
+  } catch (error) {
+    dispatch({
+      type: USER_LOGIN_FAIL,
+      payload:  error.response.data.errors
+      // error.response && error.response.data.message
+      //   ? error.response.data.message
+      //   : error.message,
+    });
+    // console.log(error.response.data.errors);
+    // console.log(error.message);
+  }
+};
+
+//User Login with GOOGLE
+export const userLoginWithGoogle = (response) => async (dispatch) => {
+  const config = { tokenId: response.tokenId }
+  try {
+    setLoading();
+
+    const { data } = await axios.post('/api/users/google', config); 
+    //set user data into localStorage
+    console.log('in action' + data )
+    dispatch({
+      type: USER_LOGIN_WITH_GOOGLE_SUCCESS,
+      payload: data,
     });
     //set user data into localStorage
     localStorage.setItem("userInfo", JSON.stringify(data));
-  } catch (err) {
+  } catch (error) {
+    const message =
+      error.response && error.response.data.message
+        ? error.response.data.message
+        : error.message;
+    // if (message === "Not authorized, No token found") {
+    //   dispatch(userLogoutResquest());
+    // }
     dispatch({
-      type: USER_LOGIN_FAIL,
-      payload: err.response.data.errors,
+      type: USER_LOGIN_WITH_GOOGLE_FAIL,
+      payload: message,
     });
-    console.log(err.response.data.errors);
+  }
+};
+
+//User Login with Facebook
+export const userLoginWithFaceBook = (response) => async (dispatch) => {
+  const config = { accessToken: response.accessToken, userID: response.userID}
+  try {
+    setLoading();
+
+    const { data } = await axios.post('/api/users/facebook', config); 
+    //set user data into localStorage
+    console.log('in action' + data )
+    dispatch({
+      type: USER_LOGIN_WITH_FACEBOOK_SUCCESS,
+      payload: data,
+    });
+    //set user data into localStorage
+    localStorage.setItem("userInfo", JSON.stringify(data));
+  } catch (error) {
+    const message =
+      error.response && error.response.data.message
+        ? error.response.data.message
+        : error.message;
+    // if (message === "Not authorized, No token found") {
+    //   dispatch(userLogoutResquest());
+    // }
+    dispatch({
+      type: USER_LOGIN_WITH_FACEBOOK_FAIL,
+      payload: message,
+    });
   }
 };
 
@@ -77,12 +150,12 @@ export const userRegisterRequest = (name, email, password) => async (
 
     //set user data into localStorage
     localStorage.setItem("userInfo", JSON.stringify(data));
-  } catch (err) {
+  } catch (error) {
     dispatch({
       type: USER_REGISTER_FAIL,
-      payload: err.response.data.errors,
+      payload: error.response.data.errors,
     });
-    console.log(err.response.data.errors);
+    console.log(error.response.data.errors);
   }
 };
 
@@ -91,9 +164,7 @@ export const getUserProfileDetails = (id) => async (dispatch, getState) => {
   try {
     setLoading();
 
-    const {
-      user: { userInfo },
-    } = getState();
+    const { user: { userInfo } } = getState();
 
     const config = {
       headers: {
@@ -169,19 +240,25 @@ export const updateUserProfileDetails = (userCreds) => async (
 
 //User Logout
 export const userLogoutResquest = () => (dispatch) => {
-  localStorage.removeItem("userInfo");
+  localStorage.removeItem('userInfo')
+  localStorage.removeItem('cartItems')
+  localStorage.removeItem('shippingAddress')
+  localStorage.removeItem('paymentMethod')
   dispatch({ type: USER_LOGOUT });
   dispatch({ type: USER_DETAILS_RESET });
   dispatch({ type: ORDER_MY_LIST_RESET });
+  dispatch({ type: USER_LIST_FOR_ADMIN_RESET });
+  
+  document.location.href = '/login'
 };
 
 //Admin gets all users
-export const getUserListForAdminAction = () => async (dispatch, getState) => {
+export const getUserList = () => async (dispatch, getState) => {
   try {
     setLoading();
 
     const {
-      userLogin: { userInfo },
+      user: { userInfo },
     } = getState();
 
     const config = {
@@ -206,6 +283,83 @@ export const getUserListForAdminAction = () => async (dispatch, getState) => {
     }
     dispatch({
       type: USER_LIST_FOR_ADMIN_FAIL,
+      payload: message,
+    });
+  }
+};
+
+//Admin gets all users
+export const deleteUser = (id) => async (dispatch, getState) => {
+  try {
+    setLoading();
+
+    const {
+      user: { userInfo },
+    } = getState();
+
+    const config = {
+      headers: {
+        Authorization: `Bearer ${userInfo.token}`,
+      },
+    };
+
+    const { data } = await axios.delete(`/api/users/${id}`, config)
+
+    dispatch({
+      type: USER_DELETE_FOR_ADMIN_SUCCESS,
+      payload: data,
+    });
+  } catch (error) {
+    const message =
+      error.response && error.response.data.message
+        ? error.response.data.message
+        : error.message;
+    if (message === "Not authorized, No token found") {
+      dispatch(userLogoutResquest());
+    }
+    dispatch({
+      type: USER_DELETE_FOR_ADMIN_FAIL,
+      payload: message,
+    });
+  }
+};
+ 
+//Admin updates user
+export const updateUser = (user) => async (dispatch, getState) => {
+  try {
+    setLoading();
+
+    const {
+      user: { userInfo },
+    } = getState();
+
+    const config = {
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${userInfo.token}`,
+      },
+    };
+    
+    const { data } = await axios.put(`/api/users/${user._id}`, user, config)
+
+    dispatch({
+      type: USER_UPDATE_BY_ADMIN_SUCCESS,
+      payload: data,
+    });
+    dispatch({
+      type: USER_DETAILS_SUCCESS,
+      payload: data,
+    });
+  } catch (error) {
+    const message =
+      error.response && error.response.data.message
+        ? error.response.data.message
+        : error.message;
+    if (message === "Not authorized, No token found") {
+      dispatch(userLogoutResquest());
+    }
+    dispatch({
+      type: USER_UPDATE_BY_ADMIN_FAIL,
       payload: message,
     });
   }

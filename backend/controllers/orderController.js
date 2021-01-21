@@ -1,9 +1,7 @@
 import asyncHandler from "express-async-handler";
 import Order from "../models/orderModel.js";
 
-//@ desc, CREATE ORDER IN DB
-//@req Type & route, POST, /api/orders
-//@access    Public
+//@ desc, CREATE ORDER IN DB, @req Type & route, POST, /api/orders, //@access Public
 const addOrderToDB = asyncHandler(async (req, res) => {
   const {
     orderItems,
@@ -35,7 +33,7 @@ const addOrderToDB = asyncHandler(async (req, res) => {
   }
 });
 
-//@ fetch single order,  @req Type & route, GET, /api/orders/:id,  @access   Private
+//@fetch single order,  @req Type & route, GET, /api/orders/:id, @access Private
 const getSingleOrder = asyncHandler(async (req, res) => {
   const order = await Order.findById(req.params.id).populate(
     "user",
@@ -52,19 +50,32 @@ const getSingleOrder = asyncHandler(async (req, res) => {
 const setOrderToBePaid = asyncHandler(async (req, res) => {
   const order = await Order.findById(req.params.id);
 
-  if (order) {
+  if (order) { 
     order.isPaid = true;
     order.paidAt = Date.now();
-    order.paymentResult = {
-      id: req.body.id,
-      status: req.body.status,
-      update_time: req.body.update_time,
-      // name: req.body.payer.name,
-    };
 
     const paidOrder = await order.save();
 
     res.json(paidOrder);
+  } else {
+    res.status(404);
+    throw new Error("Order not found");
+  }
+});
+
+
+//@ set order tobe out of deliviring,  @req Type & route, PUT, /api/orders/:id/deliver,  @access, Private, admin only
+const setOrderToDelivery = asyncHandler(async (req, res) => {
+  const order = await Order.findById(req.params.id);
+
+  if (order) {
+    order.isDelivered = true;
+    order.deliveredAt = Date.now();
+    order.paidAt = Date.now();
+
+    const deliveredOrder = await order.save();
+
+    res.json(deliveredOrder);
   } else {
     res.status(404);
     throw new Error("Order not found");
@@ -77,4 +88,17 @@ const getMyOrders = asyncHandler(async (req, res) => {
   res.json(orders);
 });
 
-export { addOrderToDB, getSingleOrder, setOrderToBePaid, getMyOrders };
+//@ get all orders,  @req Type & route, Get, /api/orders,  @access Private admin only
+const getAllOrders = asyncHandler(async (req, res) => {
+  const orders = await Order.find({ });
+  res.json(orders);
+});
+
+export { 
+  addOrderToDB, 
+  getSingleOrder, 
+  setOrderToBePaid, 
+  getMyOrders, 
+  getAllOrders, 
+  setOrderToDelivery 
+};

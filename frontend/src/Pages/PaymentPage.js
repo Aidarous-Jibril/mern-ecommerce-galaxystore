@@ -1,13 +1,15 @@
 import React, { useState, useEffect } from 'react'
-import { connect } from 'react-redux'
+import { connect, useDispatch } from 'react-redux'
 import { Button, Col, Form } from 'react-bootstrap'
 import FormContainer from './FormContainer'
 import CheckoutProcessSteps from '../components/CheckoutProcessSteps'
 import { savePaymentMethod } from '../redux/actions/cartActions.js'
 
-const PaymentPage = ({ history, shippingAddress, savePaymentMethod }) => {
+const PaymentPage = ({ history, shippingAddress }) => {
     const [paymentMethod, setPaymentMethod] = useState('Paypal')
-    // const [paymentMethod, setPaymentMethod] = useState('Paypal')
+    // const [paymentMethod, setPaymentMethod] = useState('stripe')
+    
+    const dispatch = useDispatch();
 
     useEffect(() => {
        if(!shippingAddress){
@@ -16,10 +18,11 @@ const PaymentPage = ({ history, shippingAddress, savePaymentMethod }) => {
        // eslint-disable-next-line
     }, [shippingAddress])
 
+    console.log(paymentMethod)
 //Submit
 const submitHandler = (e) => {
     e.preventDefault();
-    savePaymentMethod(paymentMethod)
+    dispatch(savePaymentMethod(paymentMethod))
     history.push('/placeorder')
 }
     return (
@@ -30,20 +33,26 @@ const submitHandler = (e) => {
                 <h1>Betalningsmetod</h1>
                 <Form.Group controlId="paymentMethod">
                     <Col>
-                        <Form.Check type="radio" id="Paypal" 
+                         <Form.Check 
+                            type="radio" 
                             label="Paypal eller Kredit kort" 
-                            value='Paypal' checked
+                            id="Paypal" 
+                            name='paymentMethod'
+                            value='Paypal' 
+                            checked
                             onChange={(e) => setPaymentMethod(e.target.value)} 
                         >
-                        </Form.Check>
-                        <Form.Check
+                        </Form.Check> 
+                       
+                         <Form.Check
                             type='radio'
-                            label='Stripe'
+                            label='stripe'
                             id='Stripe'
                             name='paymentMethod'
                             value='Stripe'
                             onChange={(e) => setPaymentMethod(e.target.value)}
-                        ></Form.Check>
+                        ></Form.Check> 
+                      
                     </Col>
                 </Form.Group>
                 <Button type='submit' variant='primary'>
@@ -54,12 +63,12 @@ const submitHandler = (e) => {
     )
 }
 
-const mapStateToDispatch = (dispatch) => ({
-    savePaymentMethod: (data) => dispatch(savePaymentMethod(data))
-})
+// const mapStateToDispatch = (dispatch) => ({
+//     savePaymentMethod: (data) => dispatch(savePaymentMethod(data))
+// })
 
 const mapStateToProps = ({ cart: { shippingAddress }}) => ({
     shippingAddress: shippingAddress
 })
 
-export default connect(mapStateToProps, mapStateToDispatch)(PaymentPage)
+export default connect(mapStateToProps, null)(PaymentPage)

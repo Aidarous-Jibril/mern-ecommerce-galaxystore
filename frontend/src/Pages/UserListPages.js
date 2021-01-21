@@ -1,33 +1,37 @@
 import React, { useEffect } from "react";
 import { LinkContainer } from "react-router-bootstrap";
 import { Table, Button } from "react-bootstrap";
-import { useDispatch, useSelector } from "react-redux";
-
-import { getUserListForAdminAction } from "..//redux/actions/userActions";
-import Loader from "../components/Loader";
+import { connect, useDispatch } from "react-redux";
+import { getUserList, deleteUser } from "../redux/actions/userActions";
 import MessageContainer from "../components/MessageContainer";
+import Loader from "../components/Loader";
 
-const UserListPage = ({ history }) => {
+const UserListPage = ({ history, user, userList, userDelete }) => {
   const dispatch = useDispatch();
 
-  const user = useSelector((state) => state.user);
-  const { loading, error, allUsers, userInfo } = user;
-  console.log(userInfo);
+//Destructure from state
+  const { loading, error, userInfo } = user;
+  const { users } = userList;
+  const { success: successDelete } = userDelete
+
   useEffect(() => {
     if (userInfo && userInfo.isAdmin) {
-      dispatch(getUserListForAdminAction());
+      dispatch(getUserList());
     } else {
       history.push("/login");
     }
-  }, [dispatch, history, userInfo]);
+  }, [dispatch, history, userInfo, successDelete]);
 
   const deleteHandler = (id) => {
-    console.log("delete");
+    if (window.confirm('Är du säker')) {
+      dispatch(deleteUser(id))
+    }
   };
 
   return (
     <>
-      <h1>Users</h1>
+    
+      <h1>Användarnas Lista</h1>
       {loading ? (
         <Loader />
       ) : error ? (
@@ -44,8 +48,8 @@ const UserListPage = ({ history }) => {
             </tr>
           </thead>
           <tbody>
-            {allUsers &&
-              allUsers.map((user) => (
+            {users &&
+              users.map((user) => (
                 <tr key={user._id}>
                   <td>{user._id}</td>
                   <td>{user.name}</td>
@@ -85,4 +89,11 @@ const UserListPage = ({ history }) => {
   );
 };
 
-export default UserListPage;
+//mapStateToProps
+const mapStateToProps = ({ user, userList, userDelete, }) => ({
+  user: user,
+  userList: userList,
+  userDelete: userDelete,
+});
+export default connect(mapStateToProps, null)(UserListPage);
+
