@@ -66,14 +66,14 @@ const LoginPage = ({history, user }) => {
                     Logga In
                 </Button>           
                 { }
-                <Row style={btnStyle} >  
-                    <div className="col-md-6 my-4"  ><GoogleLoginPage   /> </div>
-                    <div className='col-md-6 my-2 ' ><FacebookLoginPage /> </div>     
-   
+                <Row   >  
+                    <div div className='btn btn-block social' variant='primary'> <GoogleLoginPage/> </div>
+                    <div div className='btn btn-block social' variant='primary'> <FacebookLoginPage /> </div>
+                    
                 </Row>
             </Form>
 
-            <Row className='my-3'>
+            <Row className='my-2'>
                 <Col>
                    Ny Kund? {' '} <Link to='/register'>Registrera Dig</Link>
                 </Col>
@@ -81,13 +81,6 @@ const LoginPage = ({history, user }) => {
         </FormContainer>
       )
     }
-
-    //Stle for google & fb btns
-    const btnStyle = { 
-        display: 'flex', 
-        flexDirection: 'row',
-        justifyContent: 'spaceBetween' 
-      }
 
 //mapStateToProps
 const mapStateToProps = ({ user }) => ({

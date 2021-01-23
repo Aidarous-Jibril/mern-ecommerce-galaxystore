@@ -39,18 +39,18 @@ const Header = ({ user, userLogoutResquest }) => {
                   </NavDropdown.Item>
                 </NavDropdown>
               ) : (
-                <>
-              
-                <LinkContainer to="/login">
-                  <Nav.Link>
-                    <i className="fas fa-user"></i> Logga In
-                  </Nav.Link>
-                </LinkContainer>
-                <LinkContainer to="/contact-us">
-                  <Nav.Link>
-                  <i className="fas fa-envelope-square"></i> Kontakta Oss
-                  </Nav.Link>
-                </LinkContainer>
+
+                <>              
+                  <LinkContainer to="/login">
+                    <Nav.Link>
+                      <i className="fas fa-user"></i> Logga In
+                    </Nav.Link>
+                  </LinkContainer>
+                  <LinkContainer to="/contact-us">
+                    <Nav.Link>
+                    <i className="fas fa-envelope-square"></i> Kontakta Oss
+                    </Nav.Link>
+                  </LinkContainer>
                 </>
               )}
 

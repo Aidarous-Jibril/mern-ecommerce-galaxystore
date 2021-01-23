@@ -25,10 +25,6 @@ if (process.env.NODE_ENV === 'development') {
   app.use(morgan('dev'))
 }
 
-app.get("/", (req, res) => {
-  res.send("Home page");
-});
-
 app.use("/api/products", productRoutes);
 app.use("/api/users", userRoutes);
 app.use("/api/orders", orderRoutes);
@@ -36,14 +32,29 @@ app.use("/api/upload", imgUploadRoutes);
 
 //Paypal API end point
 app.get("/api/config/paypal", (req, res) =>
-  res.send(process.env.PAYPAL_CLIENT_ID)
+res.send(process.env.PAYPAL_CLIENT_ID)
 );
+
+const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
 
 //since we use ES6 module, make __dirname accessible in ES6 module
 const __dirname = path.resolve()
 app.use('/uploads', express.static(path.join(__dirname, '/uploads')))
 
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
+//set into production
+if(process.env.NODE_ENV === 'production'){
+  app.use(express.static(path.join(__dirname, 'frontend/build')));
+
+  app.use('*', (req, res) => {
+    res.sendFile(path.resolve(__dirname, 'frontend', 'build', 'index.html'))
+  })
+} else {
+  app.use('/', (req, res) => {
+    res.send('API is Running')
+  })
+}
+
+
 //Stripe payment route
 app.post('/stripe', (req, res) => {
   console.log(req.body)

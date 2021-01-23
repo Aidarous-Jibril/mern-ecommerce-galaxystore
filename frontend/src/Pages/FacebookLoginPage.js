@@ -12,15 +12,14 @@ const FacebookLoginPage = ({ FACEBOOK_ID, btnFacebook }) => {
       }
 
     return (
-            <FacebookLogin
-                appId={FACEBOOK_ID}
-                fields="name,email,picture"
-                callback={responseFacebook}
-                style={btnFacebook}
-                render={renderProps => (
-                  <button onClick={renderProps.onClick}>This is my custom FB button</button>
-                )}
-            />
+      
+        <FacebookLogin
+            appId={FACEBOOK_ID}
+            fields="name,email,picture"
+            callback={responseFacebook}
+            icon="fab fa-facebook-square fa-2x"
+              />
+
     )
 }
 FacebookLoginPage.defaultProps = {

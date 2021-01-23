@@ -1,5 +1,5 @@
 import React from 'react'
-import { connect, useDispatch } from 'react-redux'
+import {  useDispatch } from 'react-redux'
 import GoogleLogin from 'react-google-login'
 import { userLoginWithGoogle } from '../redux/actions/userActions';
 
@@ -25,9 +25,4 @@ const GoogleLoginPage = () => {
     )
 }
 
-//mapStateToProps
-const mapStateToProps = ({ user }) => ({
-    user: user
-})
-  
-export default connect(mapStateToProps, null)(GoogleLoginPage);
+export default GoogleLoginPage;

@@ -69,3 +69,16 @@ h3 {
   left: 0;
   width: 100%;
 }
+
+/******* Google / Facebook btns *******/
+.social button {
+  width: 80%;
+  height: 40px;
+  padding: 10px;
+  text-transform: uppercase;
+  margin-top: -8px;
+  font-size: 12px;
+  letter-spacing: 1.3px;
+  box-shadow: 2px 2px 4px #000000;
+  text-align: center;
+}

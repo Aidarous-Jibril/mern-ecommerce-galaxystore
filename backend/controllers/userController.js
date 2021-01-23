@@ -63,7 +63,7 @@ const authUserWithGoogle = asyncHandler(async (req, res) => {
   //compare tokenId from frontend tobe same idToken which we get back from client.verifyIdToken in the backend
   client.verifyIdToken({idToken: tokenId, audience: '467512918612-mnlop54n512qt070c47aqircim7pm1e0.apps.googleusercontent.com'}).then(response => {
    console.log(response.payload)
-   const {email_verified, email, name} = response.payload
+   const {email, name} = response.payload
 
    User.findOne({email}).then((currentUser) => {
     if(currentUser){
