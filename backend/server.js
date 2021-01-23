@@ -35,6 +35,7 @@ app.get("/api/config/paypal", (req, res) =>
 res.send(process.env.PAYPAL_CLIENT_ID)
 );
 
+if (process.env.NODE_ENV !== 'production') dotenv.config();
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
 
 //since we use ES6 module, make __dirname accessible in ES6 module
