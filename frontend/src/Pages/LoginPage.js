@@ -67,8 +67,8 @@ const LoginPage = ({history, user }) => {
                 </Button>           
                 { }
                 <Row   >  
-                    <div div className='btn btn-block social' variant='primary'> <GoogleLoginPage/> </div>
-                    <div div className='btn btn-block social' variant='primary'> <FacebookLoginPage /> </div>
+                    <div div className='btn btn-block social' > <GoogleLoginPage/> </div>
+                    <div div className='btn btn-block social' > <FacebookLoginPage /> </div>
                     
                 </Row>
             </Form>
