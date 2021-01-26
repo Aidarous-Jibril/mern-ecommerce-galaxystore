@@ -3,7 +3,7 @@ import { useHistory } from "react-router-dom";
 import axios from 'axios'
 import { Form, Button } from 'react-bootstrap'
 import FormContainer from '../Pages/FormContainer.js'
-
+import MessageContainer from './MessageContainer.js'
 
 
 const ContactUs = ( ) => {
@@ -11,40 +11,55 @@ const ContactUs = ( ) => {
     const [name, setName] = useState('')
     const [email, setEmail] = useState('')
     const [message, setMessage] = useState('')
+    const [formUpdate, setFormUpdate] = useState('')
 
     //submit
     const submitHandler = (e) => {
         e.preventDefault()
-        const config = { name, email, message}
-
-        axios.post(`/api/users/contact-us`, config).then((response)=>{
-          if (response.data.status === 'success') {
-            window.alert("Message is sent."); 
-            console.log(response)
-            //reset form fields
+        if(name === '' | email === '' | message === ''){
+          setFormUpdate('Fyll i alla fält')
+        } else {
+          setFormUpdate('Meddelande skickad')
             setName('')
             setEmail('');
             setMessage('');
-            history.push('/')
-          } else if(response.data.status === 'fail') {
-            window.alert("Message failed.")
-          }
-        })
+
+        }
+        //using nodemailer
+        // const config = { name, email, message}
+        // axios.post(`/api/users/contact-us`, config).then((response)=>{
+        //   if (response.data.status === 'success') {
+        //     window.alert("Message is sent."); 
+        //     console.log(response)
+        //     //reset form fields
+        //     setName('')
+        //     setEmail('');
+        //     setMessage('');
+        //     history.push('/')
+        //   } else if(response.data.status === 'fail') {
+        //     window.alert("Message failed.")
+        //   }
+        // })
   }
 
   return (
 <FormContainer className='container'>
         <h1>KONTAKTA OSS</h1>
         <Form onSubmit={submitHandler}>
-            <Form.Group controlId="formBasicName">
+          {formUpdate && <MessageContainer variant='info'>{formUpdate}</MessageContainer>}
+            <Form.Group controlId="name">
                 <Form.Label> Namn </Form.Label>
-                <Form.Control type="name" placeholder="Enter name" 
-                    value={name} 
-                    onChange={(e) => setName(e.target.value)} />
+                <Form.Control
+                  required 
+                  type="name" 
+                  placeholder="Enter name" 
+                  value={name} 
+                  onChange={(e) => setName(e.target.value)} />
             </Form.Group>
             <Form.Group controlId='email'>
                 <Form.Label>Email Address</Form.Label>
                 <Form.Control
+                    required
                     type='email'
                     placeholder='Enter email'
                     value={email}
@@ -55,6 +70,7 @@ const ContactUs = ( ) => {
             <Form.Group controlId='message'>
                 <Form.Label>Meddelande</Form.Label>
                 <Form.Control
+                    required
                     type='message'
                     placeholder='Skriv ditt meddelande'
                     as="textarea" rows={3}

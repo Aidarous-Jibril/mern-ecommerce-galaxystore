@@ -49,11 +49,12 @@ if(process.env.NODE_ENV === 'production'){
   app.use('*', (req, res) => {
     res.sendFile(path.resolve(__dirname, 'frontend', 'build', 'index.html'))
   })
-} else {
-  app.use('/', (req, res) => {
-    res.send('API is Running')
-  })
-}
+} 
+// else {
+//   app.use('/', (req, res) => {
+//     res.send('API is Running')
+//   })
+// }
 
 
 //Stripe payment route
@@ -62,7 +63,7 @@ app.post('/stripe', (req, res) => {
   const body = {
     source: req.body.token.id,
     amount: req.body.amount,
-    currency: 'usd'
+    currency: 'sek'
   };
 
   stripe.charges.create(body, (stripeErr, stripeRes) => {

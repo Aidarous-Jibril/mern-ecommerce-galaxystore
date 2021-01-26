@@ -7,7 +7,7 @@ import { savePaymentMethod } from '../redux/actions/cartActions.js'
 
 const PaymentPage = ({ history, shippingAddress }) => {
     const [paymentMethod, setPaymentMethod] = useState('Paypal')
-    // const [paymentMethod, setPaymentMethod] = useState('stripe')
+
     
     const dispatch = useDispatch();
 
@@ -62,10 +62,6 @@ const submitHandler = (e) => {
         </FormContainer>
     )
 }
-
-// const mapStateToDispatch = (dispatch) => ({
-//     savePaymentMethod: (data) => dispatch(savePaymentMethod(data))
-// })
 
 const mapStateToProps = ({ cart: { shippingAddress }}) => ({
     shippingAddress: shippingAddress

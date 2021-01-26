@@ -1,13 +1,11 @@
 import React, { useEffect } from 'react';
 import { useDispatch, connect} from 'react-redux'
 import axios from 'axios';
-// import  M from 'materialize-css/dist/js/materialize.min.js'
 import StripeCheckout from 'react-stripe-checkout';
 import { orderPaymentAction } from '../redux/actions/orderActions';
 
 
-const StripePayment = ({amount, orderId, user, orderPayment, history}) => {
-    // const totalPriceForStripe = amount * 100;
+const StripePayment = ({history, amount, orderId, user, orderPayment}) => {
     const publisheableKey =  'pk_test_RzGqGLi6SMcG89NC0XhEfglg001P2xHdMu'
 
     const { userInfo} = user;
@@ -16,7 +14,7 @@ const StripePayment = ({amount, orderId, user, orderPayment, history}) => {
 
     //token passes into backend req, token contains all info about payment
     const onToken = async (token) => {
-        console.log(token);
+        console.log('Stripe Token is:', token);
         const config = {token, amount, orderId}
         try {
             const { data } = await axios.post('/stripe', config); 
@@ -46,7 +44,7 @@ const StripePayment = ({amount, orderId, user, orderPayment, history}) => {
                 billingAddress
                 shippingAddress
                 image='https://svgshare.com/i/CUz.svg'
-                description={`Total amount to pay is $${amount}` }
+                description={`Total Belop att betala SEK ${amount}` }
                 amount={amount}
                 panelLabel='Betala Med Stripe'
                 token={onToken}
