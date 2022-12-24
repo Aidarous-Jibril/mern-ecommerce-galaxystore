@@ -15,17 +15,22 @@ const SearchBox = ({ history }) => {
 
     return (
         <div>
-            <Form onSubmit={submitHandler} inline >
-                <Form.Control type="text" name="query" 
-                    className="mr-sm-2 ml-sm-1 " 
+            <Form onSubmit={submitHandler}   className='form'>
+                <Form.Control 
+                    type="text" name="query" 
+                    className="mr-sm-2 ml-sm-1 form-input" 
+                    placeholder="Sök efter produkter..." 
                     onChange={(e) => setKeyword(e.target.value)}
-                    placeholder="Sök efter produkter..." >
+                    >
                 </Form.Control>
-                <Button type="submit" variant='success' className="p-2">
-                <i className="fas fa-search fa-2x"></i>
-                </Button>
                 
+                <Button type="submit" variant='Dark' className="p-2">
+                    <i className="fas fa-search fa-2x form-icon"></i>
+                </Button>
             </Form>            
+
+
+                 
         </div>
     )
 }

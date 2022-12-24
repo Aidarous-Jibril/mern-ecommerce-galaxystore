@@ -1,33 +1,30 @@
 import React, { useEffect } from "react";
 import { LinkContainer } from "react-router-bootstrap";
 import { Table, Button, Row, Col } from "react-bootstrap";
-import { connect, useDispatch } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import { getProductsList, deleteProduct , createProduct} from '../redux/actions/productActions'
 import MessageContainer from "../components/MessageContainer";
 import Paginate from "../components/Paginate";
 import Loader from "../components/Loader";
 
 
-const ProductListPage = ({ match, history,  productList, user, productDelete, productCreate}) => {
+const ProductListPage = ({ match, history }) => {
 
   //Get pageNumber query string from url
   const pageNumber = match.params.pageNumber || 1
-  //Destructure
-  const { loading, error, products, page, totalPages  } = productList
-  const { userInfo } = user;
-  const {
-    loading: loadingDelete,
-    error: errorDelete,
-    success: successDelete,
-  } = productDelete
-  const {
-    loading: loadingCreate,
-    error: errorCreate,
-    product: createdProduct,
-    success: successCreate,
-  } = productCreate
 
   const dispatch = useDispatch();
+
+  //destructure from state
+  const user = useSelector(state => state.user)
+  const { userInfo } = user;
+  const productList = useSelector(state => state.productList)
+  const { loading, error, products, page, totalPages  } = productList
+  const productDelete = useSelector(state => state.productDelete)
+  const { loading: loadingDelete, error: errorDelete, success: successDelete } = productDelete
+  const productCreate = useSelector(state => state.productCreate)
+  const { loading: loadingCreate, error: errorCreate, product: createdProduct, success: successCreate } = productCreate
+
 
   useEffect(() => {
     if (!userInfo && !userInfo.isAdmin) {
@@ -123,12 +120,5 @@ const ProductListPage = ({ match, history,  productList, user, productDelete, pr
   );
 };
 
-  //mapStateToProps
-const mapStateToProps = ({ productList, user, productDelete, productCreate }) => ({
-    productList: productList,
-    user: user,
-    productDelete: productDelete,
-    productCreate: productCreate,
-  });
   
-export default connect(mapStateToProps, null) (ProductListPage)
+export default ProductListPage;

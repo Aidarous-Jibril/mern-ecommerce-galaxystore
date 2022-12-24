@@ -1,15 +1,17 @@
 import React, { useEffect } from 'react'
-import { connect, useDispatch } from 'react-redux'
+import { useSelector, useDispatch } from 'react-redux'
 import {  Carousel, Image } from 'react-bootstrap'
 import Loader from './Loader';
 import MessageContainer from './MessageContainer';
 import { Link } from 'react-router-dom';
 import { getTopRatedProducts } from '../redux/actions/productActions';
 
-const ProductsCarousel = ({ productsTopRated }) => {
-    //destructure
-    const {loading, error, topProducts } = productsTopRated
+const ProductsCarousel = () => {
+
     const dispatch = useDispatch();
+    //destructure
+    const productsTopRated = useSelector(state => state.productsTopRated)
+    const {loading, error, topProducts } = productsTopRated
     
     useEffect(() => {
         dispatch(getTopRatedProducts())
@@ -23,7 +25,7 @@ const ProductsCarousel = ({ productsTopRated }) => {
                     <Image src={product.image} alt={product.name} fluid  />
                     <Carousel.Caption className='carousel-caption'>
                         <h2> {product.name} </h2>  
-                        <p>({product.price} SEK)</p>
+                        <p>{product.price} <span style={{ fontSize: '22px'}}>:-</span></p>
                     </Carousel.Caption>
                 </Link>
             </Carousel.Item>
@@ -32,8 +34,6 @@ const ProductsCarousel = ({ productsTopRated }) => {
     )
     
 }
-const mapStateToProps = ({ productsTopRated }) => ({
-    productsTopRated: productsTopRated
-})
 
-export default connect(mapStateToProps, null)(ProductsCarousel)
+
+export default ProductsCarousel;

@@ -1,13 +1,12 @@
 import React, { useState } from 'react'
-import { useHistory } from "react-router-dom";
-import axios from 'axios'
+// import { useHistory } from "react-router-dom";
 import { Form, Button } from 'react-bootstrap'
 import FormContainer from '../Pages/FormContainer.js'
 import MessageContainer from './MessageContainer.js'
 
 
 const ContactUs = ( ) => {
-    let history = useHistory();
+    // let history = useHistory();
     const [name, setName] = useState('')
     const [email, setEmail] = useState('')
     const [message, setMessage] = useState('')

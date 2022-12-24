@@ -11,32 +11,29 @@ import {
 } from "react-bootstrap";
 import { Link } from "react-router-dom";
 import Rating from "../components/Rating";
-import { connect, useDispatch } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import { getSingleProduct, createProductReview } from "../redux/actions/productActions";
 import Loader from "../components/Loader";
 import MessageContainer from "../components/MessageContainer";
 import { PRODUCT_CREATE_REVIEW_RESET } from "../redux/types/productTypes";
 import ReactHelmet from '../components/ReactHelmet'
 
-const ProductDetailsPage = ({
-  history,
-  match,
-  singleProductDetails,
-  user,
-  productReviewCreate
-}) => {
+
+const ProductDetailsPage = ({ history, match }) => {
   const [qty, setQty] = useState(1);
-  // Review state
   const [rating, setRating] = useState('')
   const [comment, setComment] = useState('')
 
   const id = match.params.id;
   const dispatch = useDispatch()  
 
-//Destruc frm state 
+  //destructure from state
+  const user = useSelector(state => state.user)
+  const { userInfo } = user;
+  const singleProductDetails = useSelector(state => state.singleProductDetails)
   const { loading, error, product } = singleProductDetails;
   // console.log(product.reviews)
-  const { userInfo } = user;
+  const productReviewCreate = useSelector(state => state.productReviewCreate)
   const { 
     loading: loadingProductReview, 
     error: errorProductReview, 
@@ -100,7 +97,7 @@ const ProductDetailsPage = ({
 
                 <ListGroupItem>
                   <strong>Pris: </strong>
-                  {product.price} SEK{" "}
+                  {product.price} :-{" "}
                 </ListGroupItem>
                 <ListGroupItem> {product.description} </ListGroupItem>
               </ListGroup>
@@ -243,13 +240,5 @@ const ProductDetailsPage = ({
   );
 };
 
-//mapStateToProps
-const mapStateToProps = ({ singleProductDetails, user, productReviewCreate }) => ({
-  singleProductDetails: singleProductDetails,
-  user: user,
-  productReviewCreate: productReviewCreate,
-  
-});
-
-export default connect(mapStateToProps, null)(ProductDetailsPage);
+export default ProductDetailsPage;
 

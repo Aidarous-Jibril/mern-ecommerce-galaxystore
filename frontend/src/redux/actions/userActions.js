@@ -19,8 +19,6 @@ import {
   USER_UPDATE_BY_ADMIN_FAIL,
   USER_LOGIN_WITH_GOOGLE_SUCCESS,
   USER_LOGIN_WITH_GOOGLE_FAIL,
-  USER_LOGIN_WITH_FACEBOOK_SUCCESS,
-  USER_LOGIN_WITH_FACEBOOK_FAIL,
   USER_LIST_FOR_ADMIN_RESET,
 } from "../types/userTypes";
 import { ORDER_MY_LIST_RESET } from "../types/orderTypes";
@@ -90,35 +88,6 @@ export const userLoginWithGoogle = (response) => async (dispatch) => {
   }
 };
 
-//User Login with Facebook
-export const userLoginWithFaceBook = (response) => async (dispatch) => {
-  const config = { accessToken: response.accessToken, userID: response.userID}
-  try {
-    setLoading();
-
-    const { data } = await axios.post('/api/users/facebook', config); 
-    //set user data into localStorage
-    console.log('in action' + data )
-    dispatch({
-      type: USER_LOGIN_WITH_FACEBOOK_SUCCESS,
-      payload: data,
-    });
-    //set user data into localStorage
-    localStorage.setItem("userInfo", JSON.stringify(data));
-  } catch (error) {
-    const message =
-      error.response && error.response.data.message
-        ? error.response.data.message
-        : error.message;
-    // if (message === "Not authorized, No token found") {
-    //   dispatch(userLogoutResquest());
-    // }
-    dispatch({
-      type: USER_LOGIN_WITH_FACEBOOK_FAIL,
-      payload: message,
-    });
-  }
-};
 
 //User register Request Action
 export const userRegisterRequest = (name, email, password) => async (
@@ -249,7 +218,7 @@ export const userLogoutResquest = () => (dispatch) => {
   dispatch({ type: ORDER_MY_LIST_RESET });
   dispatch({ type: USER_LIST_FOR_ADMIN_RESET });
   
-  document.location.href = '/login'
+  document.location.href = '/'
 };
 
 //Admin gets all users

@@ -21,8 +21,6 @@ import {
   USER_UPDATE_BY_ADMIN_RESET,
   USER_LOGIN_WITH_GOOGLE_SUCCESS,
   USER_LOGIN_WITH_GOOGLE_FAIL,
-  USER_LOGIN_WITH_FACEBOOK_SUCCESS,
-  USER_LOGIN_WITH_FACEBOOK_FAIL
 } from "../types/userTypes";
 
 //User Reducer
@@ -34,12 +32,10 @@ export const userReducers = (state = {}, action) => {
     //User login cases
     case USER_LOGIN_SUCCESS:
     case USER_LOGIN_WITH_GOOGLE_SUCCESS:
-    case USER_LOGIN_WITH_FACEBOOK_SUCCESS:
       console.log(action.payload );
       return { loading: false, userInfo: action.payload };
     case USER_LOGIN_FAIL:
     case USER_LOGIN_WITH_GOOGLE_FAIL:  
-    case USER_LOGIN_WITH_FACEBOOK_FAIL:  
       console.log('login error', action.payload);
       return { loading: false,  error: action.payload }
 

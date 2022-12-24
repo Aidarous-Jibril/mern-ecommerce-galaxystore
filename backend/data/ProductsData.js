@@ -97,7 +97,62 @@ const products = [
       rating: 2,
       numStock: 3,
       numReviews: 5
-    }
+    },
+    {
+      name: 'Samsung Galaxy S22',
+      image: 'https://i.postimg.cc/ZnX2Nm28/Samsung-Galaxy-S22-svart-framsida.jpg',
+      price: 7999,
+      description: 'Kreativ, kraftfull och produktiv. Med nya Galaxy S22 Ultra får du uppleva en värld du aldrig tidigare sett. 108 MP kamera, vattentät enligt IP68 och inbyggd S Pen.',
+      category: 'Electronics',
+      brand: 'Samsung ',
+      rating: 4,
+      numStock: 3,
+      numReviews: 5
+    },
+    {
+      name: 'Iphone 14 Pro Max',
+      image: 'https://i.postimg.cc/wBbCzD24/Apple-i-Phone-14-Pro-Max-Space-Black-IQ-frontback.jpg',
+      price: 12999,
+      description: 'iPhone 14 Pro Max är mobilen för dig som bara nöjer dig med det allra bästa. Med iPhone 14 Pro Max får du en maxad mobil, fullproppad med de senaste specifikationerna på alla områden.',
+      category: 'Electronics',
+      brand: 'Iphone',
+      rating: 4.9,
+      numStock: 3,
+      numReviews: 5
+    },
+    {
+      name: 'Iphone 14',
+      image: 'https://i.postimg.cc/8PVqTpdG/Apple-i-Phone-14.jpg',
+      price: 10999,
+      description: 'iPhone 14 kommer med en grym dubbelkamera, nya operativsystemet iOS16 och den kan larma om du är med i en bilolycka.',
+      category: 'Electronics',
+      brand: 'Iphone',
+      rating: 4.7,
+      numStock: 3,
+      numReviews: 5
+    },
+    {
+      name: 'Samsung Galaxy z-FLip ',
+      image: 'https://i.postimg.cc/mk3pP93s/Samsung-Galaxy-Z-Flip3.jpg',
+      price: 12999,
+      description: 'Nya Samsung Galaxy Z Flip4 är en cool och vikbar mobil. IPX8-vattentät och ett batteri som räcker länge.',
+      category: 'Electronics',
+      brand: 'Samsung',
+      rating: 4.8,
+      numStock: 3,
+      numReviews: 5
+    },
+    {
+      name: 'Samsung Galaxy S22 Ultra',
+      image: 'https://i.postimg.cc/Jhg2vM79/Samsung-Galaxy-S22-ultra-svart-framsida.jpg',
+      price: 11999,
+      description: 'Kreativ, kraftfull och produktiv. Med nya Galaxy S22 Ultra får du uppleva en värld du aldrig tidigare sett. 108 MP kamera, vattentät enligt IP68 och inbyggd S Pen.',
+      category: 'Electronics',
+      brand: 'Samsung',
+      rating: 4.6,
+      numStock: 3,
+      numReviews: 5
+    },
   ]
 
 export default products;

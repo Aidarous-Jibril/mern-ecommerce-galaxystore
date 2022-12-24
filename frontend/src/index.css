@@ -58,6 +58,53 @@ h3 {
   }
 }
 
+
+/******* Search form *******/
+.form {
+  width: 25.75rem;
+  height: 2.5rem;
+  background-color: white;
+  border-radius: 2.5rem;
+  display: flex;
+  padding: .2rem 1rem;
+}
+
+.form .form-input {
+  flex: 1;
+  height: 2.2rem;
+  background-color: white;
+  border: none;
+  border-radius: .5rem;
+  outline: none;
+  font-size: 16px;
+  height: 2rem;
+  border: 10px;
+  box-shadow: none; 
+}
+.form .form-input:focus {
+  outline: 0 !important;
+  box-shadow: none !important;
+  background-color: white;
+}
+
+.form .form-icon {
+  font-size: 20px;
+  color: none;
+  /* height: 15px; */
+}
+
+
+@media (max-width: 650px) {
+  .form {
+    margin: .6rem 0rem;
+    width: 17.75rem;
+    /* height: 2rem; */
+    border-radius: .5rem;
+    padding: .2rem .8rem;
+  }
+}
+
+/******* Footer *******/
 .footer {
   margin-top: 1rem;
   padding: 1rem;

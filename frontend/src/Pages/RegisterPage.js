@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import { connect, useDispatch } from 'react-redux'
+import { useSelector, useDispatch } from 'react-redux'
 import { Link } from 'react-router-dom'
 import { Form, Button, Row, Col } from 'react-bootstrap'
 import FormContainer from './FormContainer.js'
@@ -8,7 +8,7 @@ import Loader from '../components/Loader.js'
 import MessageContainer from '../components/MessageContainer'
 
 
-const RegisterPage = ({history, userRegister  }) => {
+const RegisterPage = ({history  }) => {
     const [name, setName] = useState('')
     const [email, setEmail] = useState('')
     const [password, setPassword] = useState('')
@@ -16,7 +16,8 @@ const RegisterPage = ({history, userRegister  }) => {
     const [message, setMessage] = useState('')
 
     const dispatch = useDispatch()
-    //destructure userInfo
+    //destructure from state
+    const userRegister = useSelector(state => state.userRegister)
     const { userInfo, loading, error} = userRegister; 
 
     useEffect(() => {
@@ -94,10 +95,4 @@ const RegisterPage = ({history, userRegister  }) => {
   )
 }
 
-    
-//mapStateToProps
-const mapStateToProps = ({ userRegister }) => ({
-    userRegister: userRegister
-})
-  
-  export default connect(mapStateToProps, null)(RegisterPage);
+export default RegisterPage;

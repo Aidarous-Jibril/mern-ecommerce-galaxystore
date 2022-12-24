@@ -1,15 +1,19 @@
 import React, { useState, useEffect } from 'react'
-import { connect, useDispatch } from 'react-redux'
+import { useSelector, useDispatch } from 'react-redux'
 import { Button, Col, Form } from 'react-bootstrap'
 import FormContainer from './FormContainer'
 import CheckoutProcessSteps from '../components/CheckoutProcessSteps'
 import { savePaymentMethod } from '../redux/actions/cartActions.js'
 
-const PaymentPage = ({ history, shippingAddress }) => {
+
+const PaymentPage = ({ history }) => {
     const [paymentMethod, setPaymentMethod] = useState('Paypal')
 
-    
     const dispatch = useDispatch();
+
+    //Destruc from state
+    const cart = useSelector(state => state.cart)
+    const { shippingAddress } = cart
 
     useEffect(() => {
        if(!shippingAddress){
@@ -63,8 +67,5 @@ const submitHandler = (e) => {
     )
 }
 
-const mapStateToProps = ({ cart: { shippingAddress }}) => ({
-    shippingAddress: shippingAddress
-})
 
-export default connect(mapStateToProps, null)(PaymentPage)
+export default PaymentPage;

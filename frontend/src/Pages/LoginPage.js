@@ -1,21 +1,21 @@
 import React, { useState, useEffect } from 'react'
-import { connect, useDispatch } from 'react-redux'
+import { useSelector, useDispatch } from 'react-redux'
 import { Link } from 'react-router-dom'
 import { Form, Button, Row, Col } from 'react-bootstrap'
 import FormContainer from './FormContainer.js'
-import GoogleLoginPage from './GoogleLoginPage.js'
 import { userLoginRequest } from '../redux/actions/userActions'
 import Loader from '../components/Loader'
 import MessageContainer from '../components/MessageContainer.js'
-import FacebookLoginPage from './FacebookLoginPage.js'
+import GoogleLoginPage from './GoogleLoginPage.js'
 
-const LoginPage = ({history, user }) => {
+const LoginPage = ({history }) => {
     const [email, setEmail] = useState('')
     const [password, setPassword] = useState('')
 
     const dispatch = useDispatch();
 
-    //destructure userInfo
+    //destructure userInfo from state
+    const user = useSelector(state => state.user)
     const { userInfo, loading, error } = user; 
 
     useEffect(() => {
@@ -38,7 +38,7 @@ const LoginPage = ({history, user }) => {
 
       return (
         <FormContainer>
-            <h1>Signa In</h1>
+            <h1>Logga in</h1>
             {error && <MessageContainer variant='danger'>{error.password || error.email}</MessageContainer>}
             {loading && <Loader />}
             <Form onSubmit={submitHandler}>
@@ -67,9 +67,7 @@ const LoginPage = ({history, user }) => {
                 </Button>           
                 { }
                 <Row   >  
-                    <div  className='btn btn-block social' > <GoogleLoginPage/> </div>
-                    <div  className='btn btn-block social' > <FacebookLoginPage /> </div>
-                    
+                    <div  className='btn btn-block social' > <GoogleLoginPage/> </div>                    
                 </Row>
             </Form>
 
@@ -82,10 +80,6 @@ const LoginPage = ({history, user }) => {
       )
     }
 
-//mapStateToProps
-const mapStateToProps = ({ user }) => ({
-    user: user
-})
 
-export default connect(mapStateToProps, null)(LoginPage);
+export default LoginPage;
 

@@ -1,15 +1,23 @@
 import React from "react";
-import { connect } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import { LinkContainer } from "react-router-bootstrap"; //using LINKCONTAINER FOR THE NAVIGATION LINKS
 import { Navbar, Nav, Container, NavDropdown } from "react-bootstrap";
 import { userLogoutResquest } from "../redux/actions/userActions";
 import { Route } from "react-router-dom";
 import SearchBox from "./SearchBox";
 
-const Header = ({ user, userLogoutResquest }) => {
+const Header = () => {
 
-  //Destructure userInfo from user
+  const dispatch = useDispatch();
+  // dispatch(userLogoutResquest)
+  //Destructure userInfo from user state
+  const user = useSelector(state => state.user)
   const { userInfo } = user;
+
+  //logout user
+  const logoutHandler = () => {
+    dispatch(userLogoutResquest())
+  }
 
   return (
     <header>
@@ -34,7 +42,7 @@ const Header = ({ user, userLogoutResquest }) => {
                   <LinkContainer to="/profile">
                     <NavDropdown.Item>Min Profil</NavDropdown.Item>
                   </LinkContainer>
-                  <NavDropdown.Item onClick={userLogoutResquest} >
+                  <NavDropdown.Item onClick={logoutHandler} >
                     Logga Ut
                   </NavDropdown.Item>
                 </NavDropdown>
@@ -48,7 +56,7 @@ const Header = ({ user, userLogoutResquest }) => {
                   </LinkContainer>
                   <LinkContainer to="/contact-us">
                     <Nav.Link>
-                    <i className="fas fa-envelope-square"></i> Kontakta Oss
+                    <i className="fas fa-envelope-square"></i> Kontakt
                     </Nav.Link>
                   </LinkContainer>
                 </>
@@ -74,12 +82,4 @@ const Header = ({ user, userLogoutResquest }) => {
     </header>
   );
 };
-
-const mapDispatchToProps = (dispatch) => ({
-  userLogoutResquest: () => dispatch(userLogoutResquest()),
-});
-//mapStateToProps
-const mapStateToProps = ({ user }) => ({
-  user: user,
-});
-export default connect(mapStateToProps, mapDispatchToProps)(Header);
+export default Header;

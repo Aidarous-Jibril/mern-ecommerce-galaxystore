@@ -1,27 +1,17 @@
 import React, { useEffect } from "react";
-import { connect, useDispatch } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import {
-  Row,
-  Col,
-  Card,
-  ListGroup,
-  Image,
-  Form,
-  Button,
-  ListGroupItem,
-} from "react-bootstrap";
+  Row, Col, Card, ListGroup, Image, Form, Button, ListGroupItem } from "react-bootstrap";
 import { addToCart, removeItemFromCart } from "../redux/actions/cartActions";
 import { Link } from "react-router-dom";
 
-const CartPage = ({
-  history,
-  match,
-  location,
-  cart,
-}) => {
+const CartPage = ({ history, match, location }) => {
   const productId = match.params.id;
   //get qty search query in the url by splitting
   const qty = location.search ? Number(location.search.split("=")[1]) : 1;
+
+  //Destructure cart from state
+  const cart = useSelector(state => state.cart)
   const { cartItems } = cart;
   // console.log(cartItems);
 
@@ -135,9 +125,4 @@ const CartPage = ({
 };
 
 
-//mapStateToProps
-const mapStateToProps = ({ cart }) => ({
-  cart: cart,
-});
-
-export default connect(mapStateToProps, null)(CartPage);
+export default CartPage;

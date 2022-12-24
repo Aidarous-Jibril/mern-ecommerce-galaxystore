@@ -1,16 +1,20 @@
 import React, { useEffect } from 'react';
-import { useDispatch, connect} from 'react-redux'
+import {useSelector, useDispatch } from 'react-redux'
 import axios from 'axios';
 import StripeCheckout from 'react-stripe-checkout';
 import { orderPaymentAction } from '../redux/actions/orderActions';
 
 
-const StripePayment = ({history, amount, orderId, user, orderPayment}) => {
+const StripePayment = ({history, amount, orderId, }) => {
     const publisheableKey =  'pk_test_RzGqGLi6SMcG89NC0XhEfglg001P2xHdMu'
-
-    const { userInfo} = user;
-    const { success: successPay } = orderPayment;
+    
     const dispatch = useDispatch();
+    
+    
+    const user = useSelector(state => state.user)
+    const { userInfo} = user;
+    const orderPayment = useSelector(state => state.orderPayment)
+    const { success: successPay } = orderPayment;
 
     //token passes into backend req, token contains all info about payment
     const onToken = async (token) => {
@@ -54,11 +58,6 @@ const StripePayment = ({history, amount, orderId, user, orderPayment}) => {
         </div>
     );
 }
-//mapStateToProps
-const mapStateToProps = ({ user, orderPayment,  }) => ({
-    user: user,
-    orderPayment: orderPayment,
-  
-  });
-  export default connect(mapStateToProps, null)(StripePayment);
+
+  export default StripePayment;
   

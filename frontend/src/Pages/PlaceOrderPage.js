@@ -1,18 +1,25 @@
 import React, { useEffect } from 'react'
-import { connect,useDispatch } from 'react-redux'
+import { useSelector, useDispatch } from 'react-redux'
 import { Link } from 'react-router-dom'
 import { Col, ListGroup, ListGroupItem, Row, Image, Button } from 'react-bootstrap'
 import CheckoutProcessSteps from '../components/CheckoutProcessSteps'
 import MessageContainer from '../components/MessageContainer'
 import { createOrderAction } from '../redux/actions/orderActions'
 
-const PlaceOrderPage = ({ history, shippingAddress, paymentMethod, cartItems, orderCreate }) => {
+
+const PlaceOrderPage = ({ history }) => {
     
     const dispatch = useDispatch()
 
+    //Dest from  state
+    const cart = useSelector(state => state.cart)
+    const { shippingAddress, paymentMethod, cartItems } = cart
     console.log('PAYMENT', paymentMethod)
-    //Dest these from orderCreate state
+
+    const orderCreate = useSelector(state => state.orderCreate)
     const { order, success, error } = orderCreate
+
+
 
     useEffect(() => {
         if (success) {
@@ -156,11 +163,5 @@ const PlaceOrderPage = ({ history, shippingAddress, paymentMethod, cartItems, or
     )
 }
 
-//mapStateToProps
-const mapStateToProps = ({ cart: { shippingAddress, cartItems, paymentMethod }, orderCreate }) => ({
-    shippingAddress: shippingAddress,
-    paymentMethod: paymentMethod,
-    cartItems: cartItems,
-    orderCreate: orderCreate
-})
-export default connect(mapStateToProps, null)(PlaceOrderPage)
+
+export default PlaceOrderPage;

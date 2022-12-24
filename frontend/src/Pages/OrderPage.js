@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { Col, ListGroup, Row, Card, Button } from "react-bootstrap";
-import { connect, useDispatch } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import MessageContainer from "../components/MessageContainer";
 import Loader from "../components/Loader";
 import { PayPalButton } from "react-paypal-button-v2";
@@ -14,25 +14,23 @@ import {
 import { ORDER_PAY_RESET, ORDER_SET_TO_DELIVERY_BY_ADMIN_RESET } from "../redux/types/orderTypes";
 import StripePayment from "./StripePayment";
 
-const OrderPage = ({
-  match, history,
-  user,
-  orderDetails,
-  orderPayment,
-  orderDeliver
-}) => {
+
+const OrderPage = ({ match, history }) => {
 
   const orderId = match.params.id;
 
   //sdkReady piece state
   const [sdkReady, setSdkReady] = useState(false);
 
-  //Dest these from orderDetails state
-  // rename orderItems to order
+  //Destruc from state
+  const user = useSelector(state => state.user)
+  const { userInfo} = user;
+  const orderDetails = useSelector(state => state.orderDetails)
   const { orderItems: order, loading, error } = orderDetails;
   // console.log("Order_Items are", orderItems, loading);
-  const { userInfo} = user;
+  const orderPayment = useSelector(state => state.orderPayment)
   const { loading: loadingPay, success: successPay } = orderPayment;
+  const orderDeliver = useSelector(state => state.orderDeliver)
   const { loading: loadingDeliver, success: successDeliver } = orderDeliver;
 
  const dispatch = useDispatch();
@@ -240,11 +238,4 @@ const OrderPage = ({
 };
 
 
-//mapStateToProps
-const mapStateToProps = ({ user, orderDetails, orderPayment, orderDeliver }) => ({
-  user: user,
-  orderDetails: orderDetails,
-  orderPayment: orderPayment,
-  orderDeliver: orderDeliver,
-});
-export default connect(mapStateToProps, null)(OrderPage);
+export default OrderPage;

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { connect, useDispatch } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import { Form, Button, Row, Col, Table } from "react-bootstrap";
 import { LinkContainer } from "react-router-bootstrap";
 import Loader from "../components/Loader.js";
@@ -11,13 +11,7 @@ import {
 import { myOrdersListAction } from "../redux/actions/orderActions";
 import { USER_UPDATE_PROFILE_RESET } from "../redux/types/userTypes.js";
 
-const UserProfilePage = ({
-  history,
-  user,
-  userDetails,
-  userProfileUpdate,
-  myOrderList
-}) => {
+const UserProfilePage = ({ history }) => {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -25,12 +19,20 @@ const UserProfilePage = ({
   const [message, setMessage] = useState("");
 
   const dispatch = useDispatch()
-
-  //Destructure from state 
+  
+  const user = useSelector(state => state.user)
   const { userInfo } = user;
+
+  const userDetails = useSelector(state => state.userDetails)
   const { loading, error, userProfileDetails } = userDetails;
+
+  const userProfileUpdate = useSelector(state => state.userProfileUpdate)
   const { success } = userProfileUpdate;
+
+  const myOrderList = useSelector(state => state.myOrderList)
   const { loading: loadingMyOrders, error: errorMyOrders, myOrders } = myOrderList;
+
+
 
 
   useEffect(() => {
@@ -192,12 +194,6 @@ const UserProfilePage = ({
 };
 
 
-//mapStateToProps
-const mapStateToProps = ({ user, userDetails, userProfileUpdate, myOrderList }) => ({
-  user: user,
-  userDetails: userDetails,
-  userProfileUpdate: userProfileUpdate,
-  myOrderList: myOrderList,
-});
 
-export default connect(mapStateToProps, null)(UserProfilePage);
+
+export default UserProfilePage;

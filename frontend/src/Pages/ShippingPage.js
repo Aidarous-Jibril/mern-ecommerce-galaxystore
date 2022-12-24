@@ -1,17 +1,22 @@
 import React, { useState } from "react";
-import { connect, useDispatch } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import { Form, Button } from "react-bootstrap";
 import FormContainer from "./FormContainer.js";
 import { saveShippingAddress } from "../redux/actions/cartActions.js";
 import CheckoutProcessSteps from "../components/CheckoutProcessSteps.js";
 
-const ShippingPage = ({ history, shippingAddress, user}) => {
+const ShippingPage = ({ history }) => {
+  const cart = useSelector((state) => state.cart)
+  const { shippingAddress } = cart
+
   const [address, setAddress] = useState(shippingAddress.address);
   const [postNumber, setPostNumber] = useState(shippingAddress.postNumber);
   const [city, setCity] = useState(shippingAddress.city);
   const [country, setCountry] = useState(shippingAddress.country);
 
   const dispatch = useDispatch();
+
+
 
   //Submit
   const submitHandler = (e) => {
@@ -24,7 +29,7 @@ const ShippingPage = ({ history, shippingAddress, user}) => {
     <FormContainer>
       <CheckoutProcessSteps step1 step2 />
 
-      <h1>Leverans Adress</h1>
+      <h1>Leverans Address</h1>
       <Form onSubmit={submitHandler}>
         <Form.Group controlId="address">
           <Form.Label>Address</Form.Label>
@@ -45,7 +50,7 @@ const ShippingPage = ({ history, shippingAddress, user}) => {
           />
         </Form.Group>
         <Form.Group controlId="address">
-          <Form.Label>Stad</Form.Label>
+          <Form.Label>Ort</Form.Label>
           <Form.Control
             type="text"
             placeholder="Stad"
@@ -71,9 +76,4 @@ const ShippingPage = ({ history, shippingAddress, user}) => {
   );
 };
 
-//mapStateToProps
-const mapStateToProps = ({ cart: { shippingAddress, user } }) => ({
-  shippingAddress: shippingAddress,
-  user: user
-});
-export default connect(mapStateToProps, null)(ShippingPage);
+export default ShippingPage;

@@ -1,18 +1,25 @@
 import React, { useEffect } from "react";
 import { LinkContainer } from "react-router-bootstrap";
 import { Table, Button } from "react-bootstrap";
-import { connect, useDispatch } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import { getUserList, deleteUser } from "../redux/actions/userActions";
 import MessageContainer from "../components/MessageContainer";
 import Loader from "../components/Loader";
 
-const UserListPage = ({ history, user, userList, userDelete }) => {
+const UserListPage = ({ history }) => {
   const dispatch = useDispatch();
 
-//Destructure from state
+  //Destructure from state
+  const user = useSelector(state => state.user)
   const { loading, error, userInfo } = user;
+
+  const userList = useSelector(state => state.userList)
   const { users } = userList;
+
+  const userDelete = useSelector(state => state.userDelete)
   const { success: successDelete } = userDelete
+
+
 
   useEffect(() => {
     if (userInfo && userInfo.isAdmin) {
@@ -89,11 +96,5 @@ const UserListPage = ({ history, user, userList, userDelete }) => {
   );
 };
 
-//mapStateToProps
-const mapStateToProps = ({ user, userList, userDelete, }) => ({
-  user: user,
-  userList: userList,
-  userDelete: userDelete,
-});
-export default connect(mapStateToProps, null)(UserListPage);
+export default UserListPage;
 

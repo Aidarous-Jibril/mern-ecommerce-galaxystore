@@ -19,7 +19,7 @@ const Rating = ({ value, textRating, color }) => {
                 <i className={value >= 5 ? 'fas fa-star' : value >= 4.5  ? 'fas fa-star-half-alt' : 'far fa-star' } />
             </span>
              {' '}
-    <span>{textRating && textRating }</span>
+            <span>{textRating && textRating }</span>
             
         </div>
     )

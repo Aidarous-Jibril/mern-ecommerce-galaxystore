@@ -1,20 +1,23 @@
 import React, { useEffect } from "react";
 import { LinkContainer } from "react-router-bootstrap";
 import { Table, Button } from "react-bootstrap";
-import { connect, useDispatch } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import { getAllOrdersAction } from '../redux/actions/orderActions'
 import MessageContainer from "../components/MessageContainer";
 import Loader from "../components/Loader";
 
 
-const OrderListPage = ({ history,  orderList, user }) => {
-
-  //Destructure
-  const { loading, error, orders } = orderList
-  console.log(orders)
-  const { userInfo } = user;
+const OrderListPage = ({ history }) => {
 
   const dispatch = useDispatch();
+  
+  //Destructure from state
+  const user = useSelector(state => state.user)
+  const { userInfo } = user;
+  const orderList = useSelector(state => state.orderList)
+  const { loading, error, orders } = orderList
+  console.log(orders)
+
 
   useEffect(() => {
     if (!userInfo && !userInfo.isAdmin) {
@@ -84,10 +87,5 @@ const OrderListPage = ({ history,  orderList, user }) => {
   );
 };
 
-  //mapStateToProps
-const mapStateToProps = ({ orderList, user }) => ({
-    orderList: orderList,
-    user: user,
-  });
-  
-export default connect(mapStateToProps, null) (OrderListPage)
+
+export default OrderListPage;

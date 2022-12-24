@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import { Col, Row } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
-import { connect, useDispatch } from  'react-redux';
+import { useSelector, useDispatch } from  'react-redux';
 import { getProductsList } from '../redux/actions/productActions'
 import Product from '../components/Product'
 import Loader from '../components/Loader';
@@ -12,7 +12,7 @@ import ReactHelmet from '../components/ReactHelmet';
 
  
 
-const HomePage = ({match,  productList  }) => {
+const HomePage = ({ match }) => {
 
     //get searched keyword from url and pass it (if s/thing init) to the getProductsList action which gets products
     const keyword = match.params.keyword
@@ -21,6 +21,7 @@ const HomePage = ({match,  productList  }) => {
 
     const dispatch = useDispatch();
 
+    const productList = useSelector(state => state.productList)
     const { loading, error, products, page, totalPages } = productList
     
     useEffect(() => {
@@ -58,10 +59,5 @@ const HomePage = ({match,  productList  }) => {
     )
 }
 
-  //mapStateToProps
-const mapStateToProps = ({ productList }) => ({
-    productList: productList
-  });
-  
  
-export default connect(mapStateToProps, null)(HomePage)
+export default HomePage;

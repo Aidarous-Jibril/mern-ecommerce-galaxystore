@@ -1,14 +1,14 @@
 import React, { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import { Form, Button } from 'react-bootstrap'
-import { connect, useDispatch } from 'react-redux'
+import { useSelector, useDispatch } from 'react-redux'
 import FormContainer from './FormContainer.js'
 import Loader from '../components/Loader.js'
 import MessageContainer from '../components/MessageContainer'
 import { getUserProfileDetails, updateUser } from "../redux/actions/userActions";
 import { USER_UPDATE_BY_ADMIN_RESET  } from '../redux/types/userTypes'
 
-const UserEditPage = ({ match, history, userDetails, userUpdate }) => {
+const UserEditPage = ({ match, history }) => {
   const userId = match.params.id
 
   const [name, setName] = useState('')
@@ -16,14 +16,14 @@ const UserEditPage = ({ match, history, userDetails, userUpdate }) => {
   const [isAdmin, setIsAdmin] = useState(false)
 
   const dispatch = useDispatch()
-// Destr from userDetails state
+  
+  // Destr from userUpdate state
+  const userDetails = useSelector(state => state.userDetails)
   const { loading, error, userProfileDetails } = userDetails
-// Destr from userUpdate state
-  const {
-    loading: loadingUpdate,
-    error: errorUpdate,
-    success: successUpdate,
-  } = userUpdate
+
+  const userUpdate = useSelector(state => state.userUpdate)
+  const { loading: loadingUpdate, error: errorUpdate, success: successUpdate } = userUpdate
+
 
   useEffect(() => {
     if (successUpdate) {
@@ -99,11 +99,5 @@ const UserEditPage = ({ match, history, userDetails, userUpdate }) => {
   )
 }
 
-//mapStateToProps
-const mapStateToProps = ({  userDetails, userUpdate  }) => ({
-    userDetails: userDetails,
-    userUpdate: userUpdate
-
-  });
   
-export default connect (mapStateToProps, null)(UserEditPage);
+export default UserEditPage;

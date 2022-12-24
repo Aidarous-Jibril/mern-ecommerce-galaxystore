@@ -16,7 +16,7 @@ const Product = ({ product }) => {
               </Link>
 
             <Rating value={product.rating} textRating={`${product.numReviews} reviews`} />
-            <Card.Text as='h3'> {product.price} SEK</Card.Text>              
+            <Card.Text as='h3'> {product.price} <span style={{ fontSize: '22px'}}>:-</span></Card.Text>              
           </Card.Body>
 
           <Link to={`product/${product._id}`} >

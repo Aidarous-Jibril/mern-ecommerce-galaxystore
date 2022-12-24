@@ -2,20 +2,14 @@ import React, { useState, useEffect } from "react";
 import axios from 'axios'
 import {Button,Form,} from "react-bootstrap";
 import { Link } from "react-router-dom";
-import { connect, useDispatch } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import { getSingleProduct, updateProduct } from "../redux/actions/productActions";
 import Loader from "../components/Loader";
 import FormContainer from './FormContainer.js'
 import MessageContainer from '../components/MessageContainer'
 import { PRODUCT_UPDATE_BY_ADMIN_RESET } from "../redux/types/productTypes";
 
-const ProductDetailsEditPage = ({
-  history,
-  match,
-  singleProductDetails,
-  productUpdate,
-  user
-}) => {
+const ProductDetailsEditPage = ({ history, match }) => {
 
   const [name, setName] = useState('')
   const [price, setPrice] = useState('')
@@ -29,10 +23,14 @@ const ProductDetailsEditPage = ({
   const productId = match.params.id;
   const dispatch = useDispatch();
 
-  const { loading, error, product } = singleProductDetails;
-  const { loading: loadingUpdate, error: errorUpdate, success: successUpdate } = productUpdate;
+  const user = useSelector(state => state.user)
   const { userInfo} = user;
+  const singleProductDetails = useSelector(state => state.singleProductDetails)
+  const { loading, error, product } = singleProductDetails;
+  const productUpdate = useSelector(state => state.productUpdate)
+  const { loading: loadingUpdate, error: errorUpdate, success: successUpdate } = productUpdate;
  
+  
   useEffect(() => {
     if (userInfo && userInfo.isAdmin && successUpdate) {
       dispatch({ type: PRODUCT_UPDATE_BY_ADMIN_RESET })
@@ -197,12 +195,5 @@ const submitHandler = (e) => {
  }
 
 
-//mapStateToProps
-const mapStateToProps = ({ singleProductDetails, productUpdate, user }) => ({
-  singleProductDetails: singleProductDetails,
-  productUpdate: productUpdate,
-  user: user
-});
-
-export default connect(mapStateToProps, null)(ProductDetailsEditPage);
+export default ProductDetailsEditPage;
 
