@@ -4,6 +4,10 @@
   "description": "eCommerce mern shop",
   "main": "server.js",
   "type": "module",
+  "engines": {
+    "node": "19.1.0",
+    "npm": "8.19.3"
+  },
   "scripts": {
     "start": "node backend/server",
     "server": "nodemon backend/server",

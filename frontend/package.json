@@ -4,6 +4,10 @@
   "secure": false,
   "version": "0.1.0",
   "private": true,
+  "engines": {
+    "node": "19.1.0",
+    "npm": "8.19.3"
+  },
   "dependencies": {
     "@testing-library/jest-dom": "^4.2.4",
     "@testing-library/react": "^9.3.2",
