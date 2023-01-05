@@ -1,15 +1,6 @@
 import React, { useState, useEffect } from "react";
-import {
-  Col,
-  Row,
-  Image,
-  ListGroup,
-  ListGroupItem,
-  Card,
-  Button,
-  Form,
-} from "react-bootstrap";
-import { Link } from "react-router-dom";
+import { Col, Row, Image, ListGroup, ListGroupItem, Card, Button, Form } from "react-bootstrap";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import Rating from "../components/Rating";
 import { useSelector, useDispatch } from "react-redux";
 import { getSingleProduct, createProductReview } from "../redux/actions/productActions";
@@ -19,12 +10,15 @@ import { PRODUCT_CREATE_REVIEW_RESET } from "../redux/types/productTypes";
 import ReactHelmet from '../components/ReactHelmet'
 
 
-const ProductDetailsPage = ({ history, match }) => {
+const ProductDetailsPage = () => {
   const [qty, setQty] = useState(1);
   const [rating, setRating] = useState('')
   const [comment, setComment] = useState('')
 
-  const id = match.params.id;
+  const { id } = useParams();
+  console.log(id)
+  const navigate = useNavigate();
+  // const id = match.params.id;
   const dispatch = useDispatch()  
 
   //destructure from state
@@ -51,11 +45,11 @@ const ProductDetailsPage = ({ history, match }) => {
       dispatch({type: PRODUCT_CREATE_REVIEW_RESET})
     }
     //eslint-disable-next-line
-  }, [match, successProductReview]);
+  }, [ successProductReview]);
 
   //Add To Cart Handler
   const addToCartHandler = () => {
-    history.push(`/cart/${id}/qty?=${qty}`);
+    navigate(`/cart/${id}?qty=${qty}`);
   };
 
   //Submit handler for review object
@@ -110,7 +104,7 @@ const ProductDetailsPage = ({ history, match }) => {
                     <Row>
                       <Col>
                         {" "}
-                        Pris: <strong>{product.price} SEK</strong>{" "}
+                        Pris: <strong>{product.price} :-</strong>{" "}
                       </Col>
                     </Row>
                   </ListGroupItem>
@@ -191,13 +185,13 @@ const ProductDetailsPage = ({ history, match }) => {
                     {userInfo ? (
                       <Form onSubmit={submitHandler}>
                         <Form.Group controlId='rating'>
-                          <Form.Label>Rating</Form.Label>
+                          <Form.Label>Betyg</Form.Label>
                           <Form.Control
                             as='select'
                             value={rating}
                             onChange={(e) => setRating(e.target.value)}
                           >
-                            <option value=''>Select...</option>
+                            <option value=''>Välj...</option>
                             <option value='1'>1 - Dålig</option>
                             <option value='2'>2 - Rimlig</option>
                             <option value='3'>3 - Bra</option>
@@ -206,7 +200,7 @@ const ProductDetailsPage = ({ history, match }) => {
                           </Form.Control>
                         </Form.Group>
                         <Form.Group controlId='comment'>
-                          <Form.Label>Comment</Form.Label>
+                          <Form.Label>Kommentera</Form.Label>
                           <Form.Control
                             as='textarea'
                             row='3'

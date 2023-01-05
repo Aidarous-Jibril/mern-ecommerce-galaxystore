@@ -1,14 +1,14 @@
 import React, { useEffect } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import { Col, ListGroup, ListGroupItem, Row, Image, Button } from 'react-bootstrap'
 import CheckoutProcessSteps from '../components/CheckoutProcessSteps'
 import MessageContainer from '../components/MessageContainer'
 import { createOrderAction } from '../redux/actions/orderActions'
 
 
-const PlaceOrderPage = ({ history }) => {
-    
+const PlaceOrderPage = () => {
+    const navigate = useNavigate()
     const dispatch = useDispatch()
 
     //Dest from  state
@@ -23,16 +23,16 @@ const PlaceOrderPage = ({ history }) => {
 
     useEffect(() => {
         if (success) {
-          history.push(`/order/${order._id}`)
+          navigate(`/order/${order._id}`)
         }
         // eslint-disable-next-line
-    }, [history, success])
+    }, [navigate, success])
 
     // redirect if address or card payment method is not select/filled
     if (!shippingAddress.address) {
-        history.push('/shipping')
+        navigate('/shipping')
       } else if (!paymentMethod) {
-        history.push('/payment')
+        navigate('/payment')
     }
 
     //calc total items price

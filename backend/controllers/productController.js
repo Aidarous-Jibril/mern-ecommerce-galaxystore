@@ -4,10 +4,10 @@ import Product from '../models/productModel.js';
 
 //@ fetch all products,  @req Type & route, GET, /api/products,  @access Public
 const getAllProducts = asyncHandler( async (req, res) => {
-  //for pagination between pages
-  const pageSize = 8
+  //for number ot items to show per page
+  const pageSize = 12
   const page = Number(req.query.pageNumber) || 1
-
+  console.log(page)
   const keyword = req.query.keyword ? {
     name: {
       $regex : req.query.keyword,

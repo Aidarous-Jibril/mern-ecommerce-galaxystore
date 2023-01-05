@@ -1,15 +1,17 @@
 import React from "react";
 import { Container } from "react-bootstrap";
-import { BrowserRouter, Route } from "react-router-dom";
+import { Routes, Route, BrowserRouter} from "react-router-dom";
+
 //Components
 import Header from "./components/Header";
 import Footer from "./components/Footer";
+import ContactUs from "./components/ContactUs";
+//Pages
 import HomePage from "./Pages/HomePage";
 import ProductDetailsPage from "./Pages/ProductDetailsPage";
 import CartPage from "./Pages/CartPage";
 import LoginPage from "./Pages/LoginPage";
 import RegisterPage from "./Pages/RegisterPage";
-import ContactUs from "./components/ContactUs";
 import UserProfilePage from "./Pages/UserProfilePage";
 import ShippingPage from "./Pages/ShippingPage";
 import PaymentPage from "./Pages/PaymentPage";
@@ -23,39 +25,44 @@ import OrderListPage from "./Pages/OrderListPage";
 
 
 function App() {
+
   return (
-    <div className="App">
-      <BrowserRouter>
-        <Header />
-        <main className="py-3">
-          <Container>
-            <header className="App-header">
-              <Route exact path="/" component={HomePage} />
-              <Route path="/product/:id" component={ProductDetailsPage} />
-              <Route path="/search/product/:id" component={ProductDetailsPage} />
-              <Route path="/page/product/:id" component={ProductDetailsPage} />
-              <Route path="/cart/:id?" component={CartPage} />
-              <Route path="/login" component={LoginPage} />
-              <Route path="/register" component={RegisterPage} />
-              <Route path="/contact-us" component={ContactUs} />
-              <Route path="/profile" component={UserProfilePage} />
-              <Route path="/shipping" component={ShippingPage} />
-              <Route path="/payment" component={PaymentPage} />
-              <Route path="/placeorder" component={PlaceOrderPage} />
-              <Route path="/order/:id" component={OrderPage} />
-              <Route path="/admin/userlist" component={UserListPages} />
-              <Route path="/admin/user/:id/edit" component={UserEditPage} />
-              <Route exact path="/admin/productlist" component={ProductListPage} />
-              <Route exact path="/admin/productlist/:pageNumber" component={ProductListPage} />
-              <Route path="/admin/product/:id/edit" component={ProductDetailsEditPage} />
-              <Route path="/admin/orderlist" component={OrderListPage} />
-              <Route exact path="/search/:keyword" component={HomePage} />
-              <Route exact path='/page/:pageNumber' component={HomePage}  />
-              <Route exact path='/search/:keyword/page/:pageNumber' component={HomePage} />
-            </header>
-          </Container>
-        </main>
-        <Footer />
+      <div className="App">
+        <BrowserRouter>
+          <Header /> 
+          <main className="py-3">
+            <Container>
+              <header className="App-header">
+                
+                <Routes>
+                  <Route exact path='/' element={<HomePage />} />
+                  <Route path="/product/:id" element={< ProductDetailsPage />} />
+                  <Route path="/search/product/:id" element={< ProductDetailsPage />} />
+                  <Route path="/page/product/:id" element={< ProductDetailsPage />} />
+                  <Route path="/cart/:id?" element={< CartPage />} />
+                  <Route path="/login" element={< LoginPage />} />
+                  <Route path="/register" element={< RegisterPage />} />
+                  <Route path="/contact-us" element={< ContactUs />} />
+                  <Route path="/profile" element={< UserProfilePage />} />
+                  <Route path="/shipping" element={< ShippingPage />} />
+                  <Route path="/payment" element={< PaymentPage />} />
+                  <Route path="/placeorder" element={< PlaceOrderPage />} />
+                  <Route path="/order/:id" element={< OrderPage />} />
+                  <Route path="/admin/userlist" element={< UserListPages />} /> 
+                  <Route path="/admin/user/:id/edit" element={< UserEditPage />} />
+                  <Route exact path="/admin/productlist" element={< ProductListPage />} />
+                  <Route exact path="/admin/productlist/:pageNumber" element={< ProductListPage />} />
+                  <Route path="/admin/product/:id/edit" element={< ProductDetailsEditPage />} />
+                  <Route path="/admin/orderlist" element={< OrderListPage />} />
+                  <Route exact path="/search/:keyword" element={<HomePage />} />
+                  <Route exact path='/page/:pageNumber' element={<HomePage />} />
+                  <Route exact path='/search/:keyword/page/:pageNumber' element={<HomePage />} />
+                </Routes> 
+
+              </header> 
+            </Container>
+          </main>
+          <Footer />
       </BrowserRouter>
     </div>
   );

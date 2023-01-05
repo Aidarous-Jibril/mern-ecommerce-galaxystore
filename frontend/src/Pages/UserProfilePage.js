@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
+import { useNavigate } from "react-router-dom";
 import { Form, Button, Row, Col, Table } from "react-bootstrap";
 import { LinkContainer } from "react-router-bootstrap";
 import Loader from "../components/Loader.js";
@@ -11,7 +12,11 @@ import {
 import { myOrdersListAction } from "../redux/actions/orderActions";
 import { USER_UPDATE_PROFILE_RESET } from "../redux/types/userTypes.js";
 
-const UserProfilePage = ({ history }) => {
+const UserProfilePage = () => {
+  // let history = useHistory();
+  const navigate = useNavigate();
+
+
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -37,7 +42,7 @@ const UserProfilePage = ({ history }) => {
 
   useEffect(() => {
     if (!userInfo) {
-      history.push("/login");
+      navigate.push("/login");
     } else {
       if (!userProfileDetails || !userProfileDetails.name || success) {
         dispatch({ type: USER_UPDATE_PROFILE_RESET })
@@ -49,7 +54,7 @@ const UserProfilePage = ({ history }) => {
       }
     }
     // eslint-disable-next-line
-  }, [dispatch, history, userInfo, success, userProfileDetails, getUserProfileDetails, myOrdersListAction ]);
+  }, [dispatch, navigate, userInfo, success, userProfileDetails, getUserProfileDetails, myOrdersListAction ]);
 
   //submit
   const submitHandler = (e) => {

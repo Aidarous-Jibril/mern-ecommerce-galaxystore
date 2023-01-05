@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import { Col, Row } from 'react-bootstrap';
-import { Link } from 'react-router-dom';
+import { Link, useParams } from 'react-router-dom';
 import { useSelector, useDispatch } from  'react-redux';
 import { getProductsList } from '../redux/actions/productActions'
 import Product from '../components/Product'
@@ -12,17 +12,18 @@ import ReactHelmet from '../components/ReactHelmet';
 
  
 
-const HomePage = ({ match }) => {
-
-    //get searched keyword from url and pass it (if s/thing init) to the getProductsList action which gets products
-    const keyword = match.params.keyword
-    //get searched pageNumber from url and pass it (if s/thing init) to the getProductsList action which gets products
-    const pageNumber = match.params.pageNumber || 1
-
+const HomePage = () => {
+    
+    const { keyword } = useParams();
+    // console.log(keyword)
+    let { pageNumber } = useParams();
+    // console.log(pageNumber)
+     pageNumber = pageNumber|| 1;
     const dispatch = useDispatch();
-
+    
     const productList = useSelector(state => state.productList)
     const { loading, error, products, page, totalPages } = productList
+    
     
     useEffect(() => {
         dispatch(getProductsList(keyword, pageNumber));

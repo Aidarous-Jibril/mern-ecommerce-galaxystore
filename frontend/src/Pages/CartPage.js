@@ -1,14 +1,17 @@
 import React, { useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import {
-  Row, Col, Card, ListGroup, Image, Form, Button, ListGroupItem } from "react-bootstrap";
+import { Row, Col, Card, ListGroup, Image, Form, Button, ListGroupItem } from "react-bootstrap";
 import { addToCart, removeItemFromCart } from "../redux/actions/cartActions";
-import { Link } from "react-router-dom";
+import { Link, useParams, useNavigate, useSearchParams } from "react-router-dom";
 
-const CartPage = ({ history, match, location }) => {
-  const productId = match.params.id;
-  //get qty search query in the url by splitting
-  const qty = location.search ? Number(location.search.split("=")[1]) : 1;
+const CartPage = () => {
+  const navigate = useNavigate();
+  const params = useParams();
+  const { id: productId } = params;
+
+  const [searchParams, setSearchParams] = useSearchParams();
+  const qtyInUrl = searchParams.get('qty'); 
+  const qty = qtyInUrl ? Number(qtyInUrl) : 1;
 
   //Destructure cart from state
   const cart = useSelector(state => state.cart)
@@ -31,7 +34,7 @@ const CartPage = ({ history, match, location }) => {
   };
   //Check out handler
   const checkoutHandler = () => {
-    history.push("/login?redirect=shipping");
+    navigate("/login?redirect=shipping");
   };
 
   return (

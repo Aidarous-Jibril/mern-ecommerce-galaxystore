@@ -1,12 +1,15 @@
 import React, { useState, useEffect } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
+import { useNavigate } from 'react-router-dom'
 import { Button, Col, Form } from 'react-bootstrap'
 import FormContainer from './FormContainer'
 import CheckoutProcessSteps from '../components/CheckoutProcessSteps'
 import { savePaymentMethod } from '../redux/actions/cartActions.js'
 
 
-const PaymentPage = ({ history }) => {
+const PaymentPage = () => {
+    const navigate = useNavigate()
+
     const [paymentMethod, setPaymentMethod] = useState('Paypal')
 
     const dispatch = useDispatch();
@@ -17,7 +20,7 @@ const PaymentPage = ({ history }) => {
 
     useEffect(() => {
        if(!shippingAddress){
-        history.push('/shipping')
+        navigate.push('/shipping')
        }
        // eslint-disable-next-line
     }, [shippingAddress])
@@ -27,7 +30,7 @@ const PaymentPage = ({ history }) => {
 const submitHandler = (e) => {
     e.preventDefault();
     dispatch(savePaymentMethod(paymentMethod))
-    history.push('/placeorder')
+    navigate('/placeorder')
 }
     return (
         <FormContainer>

@@ -1,4 +1,5 @@
 import React, { useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import { LinkContainer } from "react-router-bootstrap";
 import { Table, Button } from "react-bootstrap";
 import { useSelector, useDispatch } from "react-redux";
@@ -6,7 +7,8 @@ import { getUserList, deleteUser } from "../redux/actions/userActions";
 import MessageContainer from "../components/MessageContainer";
 import Loader from "../components/Loader";
 
-const UserListPage = ({ history }) => {
+const UserListPage = () => {
+  const navigate = useNavigate();
   const dispatch = useDispatch();
 
   //Destructure from state
@@ -25,9 +27,9 @@ const UserListPage = ({ history }) => {
     if (userInfo && userInfo.isAdmin) {
       dispatch(getUserList());
     } else {
-      history.push("/login");
+      navigate.push("/login");
     }
-  }, [dispatch, history, userInfo, successDelete]);
+  }, [dispatch, navigate, userInfo, successDelete]);
 
   const deleteHandler = (id) => {
     if (window.confirm('Är du säker')) {

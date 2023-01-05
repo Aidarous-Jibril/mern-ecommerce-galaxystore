@@ -3,11 +3,13 @@ import {useSelector, useDispatch } from 'react-redux'
 import axios from 'axios';
 import StripeCheckout from 'react-stripe-checkout';
 import { orderPaymentAction } from '../redux/actions/orderActions';
+import { useNavigate } from 'react-router-dom';
 
 
-const StripePayment = ({history, amount, orderId, }) => {
+const StripePayment = ({ amount, orderId, }) => {
     const publisheableKey =  'pk_test_RzGqGLi6SMcG89NC0XhEfglg001P2xHdMu'
     
+    const navigate = useNavigate();
     const dispatch = useDispatch();
     
     
@@ -35,7 +37,7 @@ const StripePayment = ({history, amount, orderId, }) => {
     }
     useEffect(() => {
         if(!userInfo){
-            history.push('/')
+            navigate.push('/')
         }     
         // eslint-disable-next-line
     }, [successPay])

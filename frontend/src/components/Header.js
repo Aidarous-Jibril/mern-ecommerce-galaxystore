@@ -3,16 +3,16 @@ import { useSelector, useDispatch } from "react-redux";
 import { LinkContainer } from "react-router-bootstrap"; //using LINKCONTAINER FOR THE NAVIGATION LINKS
 import { Navbar, Nav, Container, NavDropdown } from "react-bootstrap";
 import { userLogoutResquest } from "../redux/actions/userActions";
-import { Route } from "react-router-dom";
+// import { Route } from "react-router-dom";
 import SearchBox from "./SearchBox";
 
 const Header = () => {
 
   const dispatch = useDispatch();
-  // dispatch(userLogoutResquest)
   //Destructure userInfo from user state
   const user = useSelector(state => state.user)
   const { userInfo } = user;
+  console.log(userInfo)
 
   //logout user
   const logoutHandler = () => {
@@ -30,7 +30,8 @@ const Header = () => {
 
           <Navbar.Collapse id="basic-navbar-nav">
             {/* Use render props here to pass history into SearchBox as prop */}
-            <Route render={({ history }) => <SearchBox history={history} />} />
+            {/* <Route render={({ history }) => <SearchBox history={history} />} /> */}
+             <SearchBox />
             <Nav className="ml-auto">
               <LinkContainer to="/cart">
                 <Nav.Link>
@@ -83,3 +84,4 @@ const Header = () => {
   );
 };
 export default Header;
+

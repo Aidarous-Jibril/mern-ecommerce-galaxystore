@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import { Col, ListGroup, Row, Card, Button } from "react-bootstrap";
 import { useSelector, useDispatch } from "react-redux";
+import { useParams, useNavigate } from "react-router-dom";
+import { Col, ListGroup, Row, Card, Button } from "react-bootstrap";
 import MessageContainer from "../components/MessageContainer";
 import Loader from "../components/Loader";
 import { PayPalButton } from "react-paypal-button-v2";
@@ -15,9 +16,9 @@ import { ORDER_PAY_RESET, ORDER_SET_TO_DELIVERY_BY_ADMIN_RESET } from "../redux/
 import StripePayment from "./StripePayment";
 
 
-const OrderPage = ({ match, history }) => {
-
-  const orderId = match.params.id;
+const OrderPage = () => {
+  const {id: orderId } = useParams();
+  const navigate = useNavigate();
 
   //sdkReady piece state
   const [sdkReady, setSdkReady] = useState(false);
@@ -37,7 +38,7 @@ const OrderPage = ({ match, history }) => {
 
   useEffect(() => {
     if (!userInfo) {
-      history.push("/login");
+      navigate("/login");
     }
 
     //Create paypal script dynamically

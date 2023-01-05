@@ -1,11 +1,14 @@
 import React, { useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
+import { useNavigate } from "react-router-dom";
 import { Form, Button } from "react-bootstrap";
 import FormContainer from "./FormContainer.js";
 import { saveShippingAddress } from "../redux/actions/cartActions.js";
 import CheckoutProcessSteps from "../components/CheckoutProcessSteps.js";
 
-const ShippingPage = ({ history }) => {
+const ShippingPage = () => {
+  let navigate = useNavigate();
+
   const cart = useSelector((state) => state.cart)
   const { shippingAddress } = cart
 
@@ -22,7 +25,7 @@ const ShippingPage = ({ history }) => {
   const submitHandler = (e) => {
     e.preventDefault();
     dispatch(saveShippingAddress({ address, postNumber, city, country }));
-    history.push("/payment");
+    navigate("/payment");
   };
 
   return (

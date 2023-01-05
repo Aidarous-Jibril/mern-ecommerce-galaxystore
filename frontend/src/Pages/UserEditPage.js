@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useParams, useNavigate } from 'react-router-dom'
 import { Form, Button } from 'react-bootstrap'
 import { useSelector, useDispatch } from 'react-redux'
 import FormContainer from './FormContainer.js'
@@ -8,8 +8,9 @@ import MessageContainer from '../components/MessageContainer'
 import { getUserProfileDetails, updateUser } from "../redux/actions/userActions";
 import { USER_UPDATE_BY_ADMIN_RESET  } from '../redux/types/userTypes'
 
-const UserEditPage = ({ match, history }) => {
-  const userId = match.params.id
+const UserEditPage = () => {
+  let { userId } = useParams();
+  const navigate = useNavigate();
 
   const [name, setName] = useState('')
   const [email, setEmail] = useState('')
@@ -28,7 +29,7 @@ const UserEditPage = ({ match, history }) => {
   useEffect(() => {
     if (successUpdate) {
       dispatch({ type: USER_UPDATE_BY_ADMIN_RESET })
-      history.push('/admin/userlist')
+      navigate.push('/admin/userlist')
     } else {
       if (!userProfileDetails.name || userProfileDetails._id !== userId) {
         dispatch(getUserProfileDetails(userId))
@@ -38,7 +39,7 @@ const UserEditPage = ({ match, history }) => {
         setIsAdmin(userProfileDetails.isAdmin)
       }
     }
-  }, [dispatch, history, userId, userProfileDetails, successUpdate])
+  }, [dispatch, navigate, userId, userProfileDetails, successUpdate])
 
   const submitHandler = (e) => {
     e.preventDefault()

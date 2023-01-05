@@ -1,14 +1,15 @@
 import React, { useEffect } from "react";
+import { useSelector, useDispatch } from "react-redux";
+import { useNavigate } from 'react-router-dom'
 import { LinkContainer } from "react-router-bootstrap";
 import { Table, Button } from "react-bootstrap";
-import { useSelector, useDispatch } from "react-redux";
 import { getAllOrdersAction } from '../redux/actions/orderActions'
 import MessageContainer from "../components/MessageContainer";
 import Loader from "../components/Loader";
 
 
-const OrderListPage = ({ history }) => {
-
+const OrderListPage = () => {
+  const navigate = useNavigate();
   const dispatch = useDispatch();
   
   //Destructure from state
@@ -21,12 +22,12 @@ const OrderListPage = ({ history }) => {
 
   useEffect(() => {
     if (!userInfo && !userInfo.isAdmin) {
-      history.push('/login')
+      navigate('/login')
     } else {
         dispatch(getAllOrdersAction())
     } 
     // eslint-disable-next-line 
-  }, [ history, userInfo ]);
+  }, [ navigate, userInfo ]);
 
 
   return (

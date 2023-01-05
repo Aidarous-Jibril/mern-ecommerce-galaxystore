@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import axios from 'axios'
 import {Button,Form,} from "react-bootstrap";
-import { Link } from "react-router-dom";
+import { Link, useParams, useNavigate } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import { getSingleProduct, updateProduct } from "../redux/actions/productActions";
 import Loader from "../components/Loader";
@@ -9,7 +9,10 @@ import FormContainer from './FormContainer.js'
 import MessageContainer from '../components/MessageContainer'
 import { PRODUCT_UPDATE_BY_ADMIN_RESET } from "../redux/types/productTypes";
 
-const ProductDetailsEditPage = ({ history, match }) => {
+const ProductDetailsEditPage = () => {
+
+  let { productId } = useParams();
+  let navigate = useNavigate();
 
   const [name, setName] = useState('')
   const [price, setPrice] = useState('')
@@ -20,7 +23,6 @@ const ProductDetailsEditPage = ({ history, match }) => {
   const [countInStock, setCountInStock] = useState(0)
   const [uploading, setUploading] = useState(false)
 
-  const productId = match.params.id;
   const dispatch = useDispatch();
 
   const user = useSelector(state => state.user)
@@ -34,7 +36,7 @@ const ProductDetailsEditPage = ({ history, match }) => {
   useEffect(() => {
     if (userInfo && userInfo.isAdmin && successUpdate) {
       dispatch({ type: PRODUCT_UPDATE_BY_ADMIN_RESET })
-      history.push('/admin/productlist')
+      navigate('/admin/productlist')
     } else {
       if (!product.name || product._id !== productId) {
         dispatch(getSingleProduct(productId))
@@ -48,7 +50,7 @@ const ProductDetailsEditPage = ({ history, match }) => {
         setDescription(product.description)
       }
     }
-  }, [dispatch, history, userInfo, productId, product, successUpdate])
+  }, [dispatch, navigate, userInfo, productId, product, successUpdate])
 
 //image upload handler
 const  uploadFileHandler = async (e) => {

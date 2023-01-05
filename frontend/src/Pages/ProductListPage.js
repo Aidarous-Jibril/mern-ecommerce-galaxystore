@@ -1,5 +1,6 @@
 import React, { useEffect } from "react";
 import { LinkContainer } from "react-router-bootstrap";
+import { useNavigate, useParams } from "react-router-dom";
 import { Table, Button, Row, Col } from "react-bootstrap";
 import { useSelector, useDispatch } from "react-redux";
 import { getProductsList, deleteProduct , createProduct} from '../redux/actions/productActions'
@@ -8,10 +9,13 @@ import Paginate from "../components/Paginate";
 import Loader from "../components/Loader";
 
 
-const ProductListPage = ({ match, history }) => {
+const ProductListPage = () => {
+  let { pageNumber } = useParams();
+  pageNumber = pageNumber || 1;
+  let navigate = useNavigate();
 
   //Get pageNumber query string from url
-  const pageNumber = match.params.pageNumber || 1
+  // const pageNumber = match.params.pageNumber || 1
 
   const dispatch = useDispatch();
 
@@ -28,17 +32,17 @@ const ProductListPage = ({ match, history }) => {
 
   useEffect(() => {
     if (!userInfo && !userInfo.isAdmin) {
-      history.push('/login')
+      navigate('/login')
     } 
     
     if(successCreate) {
-      history.push(`/admin/product/${createdProduct._id}/edit`);
+      navigate(`/admin/product/${createdProduct._id}/edit`);
     } else {
       //getProductsList Action takes in two parameters
       dispatch(getProductsList('', pageNumber))
     }
     // eslint-disable-next-line 
-  }, [ dispatch, history, userInfo, successDelete, successCreate, createdProduct, pageNumber]);
+  }, [ dispatch, navigate, userInfo, successDelete, successCreate, createdProduct, pageNumber]);
 
   const deleteHandler = (id) => {
     if (window.confirm('Är du säkert')) {

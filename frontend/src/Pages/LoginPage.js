@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import { Form, Button, Row, Col } from 'react-bootstrap'
 import FormContainer from './FormContainer.js'
 import { userLoginRequest } from '../redux/actions/userActions'
@@ -8,7 +8,9 @@ import Loader from '../components/Loader'
 import MessageContainer from '../components/MessageContainer.js'
 import GoogleLoginPage from './GoogleLoginPage.js'
 
-const LoginPage = ({history }) => {
+const LoginPage = () => {
+    const navigate = useNavigate();
+
     const [email, setEmail] = useState('')
     const [password, setPassword] = useState('')
 
@@ -20,9 +22,9 @@ const LoginPage = ({history }) => {
 
     useEffect(() => {
         if(userInfo){
-            history.push('/shipping')
+            navigate('/shipping')
         } 
-    }, [userInfo, history])
+    }, [userInfo, navigate])
 
     //submit
     const submitHandler = (e) => {
