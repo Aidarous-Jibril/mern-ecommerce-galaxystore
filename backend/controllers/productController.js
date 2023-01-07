@@ -89,6 +89,11 @@ const updateProduct = asyncHandler(async (req, res) => {
   //Add product review
 const createProductReview = asyncHandler(async (req, res) => {
   const { rating, comment } = req.body
+  
+  // check is review is complete
+  if (!rating || !comment) {
+    return res.status(400).json({ message: 'Lämna en fullständig recension'});
+  }
 
   const product = await Product.findById(req.params.id)
 
